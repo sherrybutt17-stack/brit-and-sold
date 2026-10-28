@@ -29,7 +29,7 @@ Four-page business brokerage website mockup. Public brand name is exactly **Brit
 ## Deploy
 - GitHub repo: https://github.com/sherrybutt17-stack/brit-and-sold (private). Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml` → https://sherrybutt17-stack.github.io/brit-and-sold/
 - Pages serves from `/brit-and-sold/`: always build internal links with `url()` from `src/lib/url.ts` (never hard-code `href="/..."`). The workflow sets `BASE_PATH`/`SITE_URL`; local builds leave them unset.
-- This machine has no GitHub credentials for Claude; the owner pushes from VS Code.
+- `git push` works from this machine (credentials cached after the owner's first VS Code sign-in). Pages source is set to GitHub Actions; the repo is public.
 
 ## Gotchas
 - Scoped styles only reach a child component's root element if the child spreads `...rest` onto it (Astro passes the parent's `data-astro-cid-*` as a prop). `Icon.astro` does this, so parent CSS like `.card .icon` works.
