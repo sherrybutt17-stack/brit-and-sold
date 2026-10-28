@@ -26,6 +26,11 @@ Four-page business brokerage website mockup. Public brand name is exactly **Brit
 - `npm test` runs `tests/site.spec.ts` against the built site (build first). `npm run screenshots` writes review images to `test-results/`.
 - Astro 7's `astro preview` holds a lock file; Playwright starts it with `--ignore-lock`. Stop a detached server with `npx astro preview stop`.
 
+## Deploy
+- GitHub repo: https://github.com/sherrybutt17-stack/brit-and-sold (private). Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml` → https://sherrybutt17-stack.github.io/brit-and-sold/
+- Pages serves from `/brit-and-sold/`: always build internal links with `url()` from `src/lib/url.ts` (never hard-code `href="/..."`). The workflow sets `BASE_PATH`/`SITE_URL`; local builds leave them unset.
+- This machine has no GitHub credentials for Claude; the owner pushes from VS Code.
+
 ## Gotchas
 - Scoped styles only reach a child component's root element if the child spreads `...rest` onto it (Astro passes the parent's `data-astro-cid-*` as a prop). `Icon.astro` does this, so parent CSS like `.card .icon` works.
 - Controls linked to a form with the `form="…"` attribute (e.g. the directory sort select) don't bubble events to the `<form>`; attach listeners directly.

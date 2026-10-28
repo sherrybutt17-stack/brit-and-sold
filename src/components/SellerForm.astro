@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { IS_DEMO, OWNER_FACTS } from '../config/site';
 import { INDUSTRIES, US_STATES } from '../data/us';
 import Fact from './Fact.astro';
@@ -317,7 +318,7 @@ const stages = [
       <li>That first conversation is private and carries no obligation to list or sell.</li>
     </ol>
     <div class="btn-row">
-      <a class="btn btn--secondary" href="/businesses">Browse businesses</a>
+      <a class="btn btn--secondary" href={url('/businesses')}>Browse businesses</a>
       <button class="btn btn--secondary" type="button" data-reset-form>Start a new inquiry</button>
     </div>
   </div>

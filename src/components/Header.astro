@@ -1,15 +1,18 @@
 ---
+import { url } from '../lib/url';
 import { CTA, NAV } from '../config/site';
 import Icon from './Icon.astro';
 import Wordmark from './Wordmark.astro';
 
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const trim = (p: string) => p.replace(/\/$/, '') || '/';
+const path = trim(Astro.url.pathname);
+const home = trim(url('/'));
 const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
 <header class="site-header" data-site-header>
   <div class="container site-header__inner">
-    <a href="/" class="site-header__brand" aria-current={path === '/' ? 'page' : undefined}>
+    <a href={url('/')} class="site-header__brand" aria-current={path === home ? 'page' : undefined}>
       <Wordmark />
       <span class="visually-hidden">, home</span>
     </a>
@@ -54,7 +57,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   </div>
   <nav aria-label="Mobile">
     <ul role="list" class="mobile-menu__links">
-      <li><a href="/" aria-current={path === '/' ? 'page' : undefined}>Home</a></li>
+      <li><a href={url('/')} aria-current={path === home ? 'page' : undefined}>Home</a></li>
       {
         NAV.map((item) => (
           <li>

@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { IS_DEMO } from '../config/site';
 import Icon from './Icon.astro';
 
@@ -188,7 +189,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
     </p>
     {IS_DEMO && <p class="small muted">Nothing has been sent from this demo.</p>}
     <div class="modal__actions">
-      <a class="btn btn--secondary" href="/businesses">Browse more businesses</a>
+      <a class="btn btn--secondary" href={url('/businesses')}>Browse more businesses</a>
       <button class="btn" type="button" data-dialog-close>Close</button>
     </div>
   </div>

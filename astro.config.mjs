@@ -3,9 +3,11 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 const fontFiles = './node_modules/@fontsource-variable';
 
+// GitHub Pages serves the site from /<repo>/; the deploy workflow sets BASE_PATH and SITE_URL.
+// Locally both are unset, so the site runs at the root.
 export default defineConfig({
-  // Replace with the production domain before launch.
-  site: 'https://britandsold.example',
+  site: process.env.SITE_URL ?? 'https://britandsold.example',
+  base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
   build: {
     inlineStylesheets: 'auto',

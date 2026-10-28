@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Picture } from 'astro:assets';
 import robPortrait from '../assets/rob/rob-hero.png';
 import CtaBand from '../components/CtaBand.astro';
@@ -101,7 +102,7 @@ const promises = [
           <li><span>03</span>What would need to be true for a sale on terms you’d accept.</li>
           <li><span>04</span>Honest next steps, including “not yet” if that’s the right answer.</li>
         </ol>
-        <a class="text-link" href="/sell#process">See how a sale works <Icon name="arrow-right" /></a>
+        <a class="text-link" href={url('/sell#process')}>See how a sale works <Icon name="arrow-right" /></a>
       </aside>
     </div>
     <a class="scroll-cue hero__cue load-in" style="--d: 1.1s" href="#paths">
@@ -186,7 +187,7 @@ const promises = [
         </p>
       </div>
       <ProcessStory />
-      <a class="text-link process-link" href="/sell#process">See the full process <Icon name="arrow-right" /></a>
+      <a class="text-link process-link" href={url('/sell#process')}>See the full process <Icon name="arrow-right" /></a>
     </div>
   </section>
 
@@ -245,7 +246,7 @@ const promises = [
           Rob is an entrepreneur, CEO and business coach with more than 12 years in digital-marketing consulting. He
           knows what it takes to build a business, and how much of an owner’s life goes into one.
         </p>
-        <a class="text-link" href="/about" data-reveal style="--reveal-delay: 3">More about Rob <Icon name="arrow-right" /></a>
+        <a class="text-link" href={url('/about')} data-reveal style="--reveal-delay: 3">More about Rob <Icon name="arrow-right" /></a>
       </div>
     </div>
   </section>
@@ -254,7 +255,7 @@ const promises = [
     eyebrow="Before you need to sell"
     title="The best time to prepare for a sale is *before you need one.*"
     primary={CTA.sell}
-    secondary={{ href: '/sell#readiness', label: 'What buyers will ask about' }}
+    secondary={{ href: url('/sell#readiness'), label: 'What buyers will ask about' }}
   >
     <p>
       Buyers and lenders usually ask for the last few years of financial statements and tax returns. Improvements you

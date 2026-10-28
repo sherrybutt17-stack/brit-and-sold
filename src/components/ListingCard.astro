@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { industryIcon } from '../lib/industries';
 import { EARNINGS_LABELS, formatEmployees, formatUSD, type PublicListing } from '../lib/listings';
 import Icon from './Icon.astro';
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const { listing } = Astro.props;
-const href = `/businesses/${listing.slug}`;
+const href = url(`/businesses/${listing.slug}`);
 // Shared-element name: the title morphs into the detail page heading during navigation.
 const transitionName = `listing-${listing.id}`;
 ---

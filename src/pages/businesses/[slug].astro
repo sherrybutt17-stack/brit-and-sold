@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import type { GetStaticPaths } from 'astro';
 import Icon from '../../components/Icon.astro';
 import ListingCard from '../../components/ListingCard.astro';
@@ -72,7 +73,7 @@ const gated = [
   <PageHero class="listing-hero">
     <nav aria-label="Breadcrumb" class="breadcrumb load-in" style="--d: 0s">
       <ol role="list">
-        <li><a href="/businesses">Browse Businesses</a></li>
+        <li><a href={url('/businesses')}>Browse Businesses</a></li>
         <li aria-current="page">{listing.title}</li>
       </ol>
     </nav>
@@ -182,7 +183,7 @@ const gated = [
           }
           {
             isSold ? (
-              <a class="btn btn--block" href="/businesses">
+              <a class="btn btn--block" href={url('/businesses')}>
                 Browse current businesses
               </a>
             ) : (
@@ -210,7 +211,7 @@ const gated = [
         <div class="container">
           <div class="related-head">
             <h2 id="related-title">More sample listings</h2>
-            <a class="text-link" href="/businesses">
+            <a class="text-link" href={url('/businesses')}>
               Browse all <Icon name="arrow-right" />
             </a>
           </div>

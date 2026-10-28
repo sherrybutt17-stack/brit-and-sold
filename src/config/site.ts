@@ -1,6 +1,8 @@
 // Single source of truth for brand copy, navigation and the facts the owner still needs to supply.
 // Facts set to `null` in OWNER_FACTS are simply left off the site until they are filled in.
 
+import { url } from '../lib/url';
+
 export const BRAND = {
   name: 'Brit and Sold with Rob Dawson',
   short: 'Brit and Sold',
@@ -11,14 +13,14 @@ export const BRAND = {
 export const IS_DEMO = true;
 
 export const NAV = [
-  { href: '/businesses', label: 'Browse Businesses' },
-  { href: '/sell', label: 'Sell Your Business' },
-  { href: '/about', label: 'About Rob' },
+  { href: url('/businesses'), label: 'Browse Businesses' },
+  { href: url('/sell'), label: 'Sell Your Business' },
+  { href: url('/about'), label: 'About Rob' },
 ] as const;
 
 export const CTA = {
-  sell: { href: '/sell#inquiry', label: 'Talk About Selling' },
-  browse: { href: '/businesses', label: 'Browse Businesses' },
+  sell: { href: url('/sell#inquiry'), label: 'Talk About Selling' },
+  browse: { href: url('/businesses'), label: 'Browse Businesses' },
 } as const;
 
 type OwnerFact = string | null;

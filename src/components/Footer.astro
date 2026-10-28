@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { BRAND, CTA, IS_DEMO, NAV, OWNER_FACTS, ROB_LINKS } from '../config/site';
 import Icon from './Icon.astro';
 import Aurora from './Aurora.astro';
@@ -13,7 +14,7 @@ const hasDirectContact = Boolean(OWNER_FACTS.email || OWNER_FACTS.phone);
   <div class="container">
     <div class="site-footer__grid">
       <div class="site-footer__brand">
-        <a href="/" class="site-footer__home"><Wordmark tone="light" /><span class="visually-hidden">, home</span></a>
+        <a href={url('/')} class="site-footer__home"><Wordmark tone="light" /><span class="visually-hidden">, home</span></a>
         <p class="muted small">
           Business brokerage for owners exploring a sale, and for buyers looking for their next business.
         </p>
@@ -26,7 +27,7 @@ const hasDirectContact = Boolean(OWNER_FACTS.email || OWNER_FACTS.phone);
       <nav aria-label="Footer">
         <h2 class="site-footer__title">Explore</h2>
         <ul role="list">
-          <li><a href="/">Home</a></li>
+          <li><a href={url('/')}>Home</a></li>
           {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
         </ul>
       </nav>
@@ -34,10 +35,10 @@ const hasDirectContact = Boolean(OWNER_FACTS.email || OWNER_FACTS.phone);
       <div>
         <h2 class="site-footer__title">For owners</h2>
         <ul role="list">
-          <li><a href="/sell#inquiry">Start a confidential inquiry</a></li>
-          <li><a href="/sell#process">How a sale works</a></li>
-          <li><a href="/sell#readiness">What buyers will ask about</a></li>
-          <li><a href="/sell#faq">Questions owners ask</a></li>
+          <li><a href={url('/sell#inquiry')}>Start a confidential inquiry</a></li>
+          <li><a href={url('/sell#process')}>How a sale works</a></li>
+          <li><a href={url('/sell#readiness')}>What buyers will ask about</a></li>
+          <li><a href={url('/sell#faq')}>Questions owners ask</a></li>
         </ul>
       </div>
 
