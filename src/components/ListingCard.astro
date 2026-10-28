@@ -1,0 +1,249 @@
+---
+import { industryIcon } from '../lib/industries';
+import { EARNINGS_LABELS, formatEmployees, formatUSD, type PublicListing } from '../lib/listings';
+import Icon from './Icon.astro';
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  listing: PublicListing;
+}
+
+const { listing } = Astro.props;
+const href = `/businesses/${listing.slug}`;
+// Shared-element name: the title morphs into the detail page heading during navigation.
+const transitionName = `listing-${listing.id}`;
+---
+
+<article class="listing-card" data-spotlight>
+  <div class="listing-card__cover" data-spotlight>
+    <div class="listing-card__badges">
+      {listing.isSample && <span class="badge badge--sample">Sample listing</span>}
+      <StatusBadge status={listing.status} />
+    </div>
+    <span class="listing-card__icon">
+      <Icon name={industryIcon(listing.industry)} />
+    </span>
+  </div>
+
+  <div class="listing-card__body">
+    <p class="listing-card__industry">{listing.industry}</p>
+    <h3 class="listing-card__title" style={`view-transition-name: ${transitionName}`}>
+      <a href={href} class="listing-card__link">{listing.title}</a>
+    </h3>
+    <p class="listing-card__location"><Icon name="map-pin" />{listing.locationLabel}</p>
+
+    <dl class="listing-card__metrics">
+      <div>
+        <dt>Revenue</dt>
+        <dd>{formatUSD(listing.revenue)}</dd>
+      </div>
+      {
+        listing.earnings && (
+          <div>
+            <dt>
+              <abbr title={EARNINGS_LABELS[listing.earnings.kind]}>{listing.earnings.kind}</abbr>
+            </dt>
+            <dd>{formatUSD(listing.earnings.amount)}</dd>
+          </div>
+        )
+      }
+      <div>
+        <dt>Asking price</dt>
+        <dd class:list={{ 'is-muted': listing.askingPrice === null }}>
+          {listing.askingPrice === null ? 'On request' : formatUSD(listing.askingPrice)}
+        </dd>
+      </div>
+    </dl>
+
+    <div class="listing-card__foot">
+      <p class="listing-card__meta">
+        <span><Icon name="users" />{formatEmployees(listing.employees)} employees</span>
+        {listing.yearsOperating && <span><Icon name="calendar" />{listing.yearsOperating} yrs</span>}
+      </p>
+      <span class="listing-card__more" aria-hidden="true"><Icon name="arrow-up-right" /></span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .listing-card {
+    --spot-color: rgb(58 107 232 / 0.09);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      box-shadow 0.5s ease,
+      border-color 0.4s ease;
+  }
+  .listing-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--sky-200);
+    box-shadow: 0 30px 60px -30px rgb(10 26 51 / 0.35);
+  }
+  .listing-card:has(.listing-card__link:focus-visible) {
+    border-color: var(--cobalt-600);
+    box-shadow: 0 0 0 3px rgb(31 79 209 / 0.25);
+  }
+
+  /* Cover: a small blueprint panel with the industry mark and a glow that tracks the pointer. */
+  .listing-card__cover {
+    --spot-color: rgb(96 150 255 / 0.45);
+    --spot-size: 260px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 7.5rem;
+    padding: var(--space-4);
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgb(31 79 209 / 0.55), transparent 60%),
+      linear-gradient(rgb(156 195 255 / 0.08) 1px, transparent 1px) -1px -1px / 22px 22px,
+      linear-gradient(90deg, rgb(156 195 255 / 0.08) 1px, transparent 1px) -1px -1px / 22px 22px,
+      var(--navy-900);
+  }
+  .listing-card:hover .listing-card__cover::before {
+    opacity: 1;
+  }
+  .listing-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .listing-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgb(156 195 255 / 0.25);
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.06);
+    color: var(--sky-300);
+    transition: transform 0.6s var(--ease-spring);
+  }
+  .listing-card__icon .icon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  .listing-card:hover .listing-card__icon {
+    transform: rotate(-6deg) scale(1.06);
+  }
+
+  .listing-card__body {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+  }
+  .listing-card__industry {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cobalt-600);
+  }
+  .listing-card__title {
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+  .listing-card__link {
+    color: var(--navy-900);
+    text-decoration: none;
+  }
+  .listing-card__link:focus-visible {
+    outline: none;
+  }
+  /* The whole card is clickable; the title link stays the single accessible target. */
+  .listing-card__link::after {
+    content: '';
+    position: absolute;
+    inset: -7.5rem 0 0;
+  }
+  .listing-card__location {
+    display: flex;
+    gap: 0.4rem;
+    align-items: flex-start;
+    font-size: var(--fs-small);
+    color: var(--ink-muted);
+  }
+  .listing-card__location .icon {
+    margin-top: 0.2rem;
+    color: var(--cobalt-600);
+  }
+  .listing-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+    padding: var(--space-3) 0;
+    border-block: 1px solid var(--line);
+  }
+  .listing-card__metrics dt {
+    font-size: var(--fs-xs);
+    color: var(--ink-muted);
+  }
+  .listing-card__metrics abbr {
+    text-decoration: none;
+    cursor: help;
+  }
+  .listing-card__metrics dd {
+    font-family: var(--font-display-stack);
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--navy-900);
+  }
+  .listing-card__metrics dd.is-muted {
+    font-family: var(--font-body-stack);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    line-height: 1.95;
+    color: var(--ink-muted);
+  }
+  .listing-card__foot {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+  .listing-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--fs-xs);
+    color: var(--ink-muted);
+  }
+  .listing-card__meta span {
+    display: inline-flex;
+    gap: 0.35rem;
+    align-items: center;
+  }
+  .listing-card__more {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--navy-900);
+    transition:
+      background-color 0.35s ease,
+      border-color 0.35s ease,
+      color 0.35s ease,
+      transform 0.5s var(--ease-spring);
+  }
+  .listing-card:hover .listing-card__more {
+    border-color: var(--cobalt-600);
+    background: var(--cobalt-600);
+    color: var(--white);
+    transform: rotate(45deg);
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+// A heading whose words rise into view. Wrap words in *asterisks* for the italic accent and use
+// " | " for a line break. Screen readers get the plain sentence; the animated copy is hidden from them.
+
+interface Props {
+  text: string;
+  as?: 'h1' | 'h2' | 'h3' | 'p';
+  /** 'load' animates immediately (heroes); 'view' animates when scrolled into view. */
+  mode?: 'load' | 'view';
+  id?: string;
+  class?: string;
+  /** Extra delay before the first word, e.g. "200ms". */
+  delay?: string;
+}
+
+const { text, as: Tag = 'h2', mode = 'view', id, class: className, delay } = Astro.props;
+
+type Token = { word: string; italic: boolean } | { br: true };
+const tokens: Token[] = [];
+let italic = false;
+for (const raw of text.split(/\s+/).filter(Boolean)) {
+  if (raw === '|') {
+    tokens.push({ br: true });
+    continue;
+  }
+  let word = raw;
+  const opens = word.startsWith('*');
+  if (opens) {
+    italic = true;
+    word = word.slice(1);
+  }
+  const closes = word.endsWith('*') || /\*[.,?!:;’”]*$/.test(word);
+  word = word.replace('*', '');
+  tokens.push({ word, italic });
+  if (closes) italic = false;
+}
+const plain = text.replaceAll('*', '').replaceAll(' | ', ' ');
+let index = 0;
+---
+
+<Tag
+  id={id}
+  class:list={['split', `split--${mode}`, className]}
+  data-reveal={mode === 'view' ? '' : undefined}
+  style={delay ? `--split-delay: ${delay}` : undefined}
+>
+  <span class="visually-hidden">{plain}</span>
+  <span aria-hidden="true">
+    {
+      tokens.map((token) =>
+        'br' in token ? (
+          <br />
+        ) : (
+          <Fragment>
+            <span class="split__w">
+              <span class="split__i" style={`--i: ${index++}`}>
+                {token.italic ? <em>{token.word}</em> : token.word}
+              </span>
+            </span>{' '}
+          </Fragment>
+        ),
+      )
+    }
+  </span>
+</Tag>

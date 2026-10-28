@@ -1,0 +1,478 @@
+---
+import { IS_DEMO, OWNER_FACTS } from '../config/site';
+import { INDUSTRIES, US_STATES } from '../data/us';
+import Fact from './Fact.astro';
+import Icon from './Icon.astro';
+
+const revenueRanges = ['Under $500K', '$500K – $1M', '$1M – $3M', '$3M – $10M', '$10M+', 'I’d rather not say yet'];
+const employeeRanges = ['Just me', '2 – 10', '11 – 25', '26 – 50', '51 – 100', '100+'];
+const steps = ['About you', 'The business', 'Timing'];
+const stages = [
+  { value: 'within-12-months', label: 'I’d like to sell in the next 12 months' },
+  { value: 'one-to-three-years', label: 'I’m planning ahead: one to three years out' },
+  { value: 'not-ready', label: 'I’m not ready to sell, I want to understand my options' },
+  { value: 'circumstances-changed', label: 'Something has changed and I need to move sooner' },
+];
+---
+
+<div class="seller-form card" data-seller-form-root>
+  {
+    IS_DEMO && (
+      <p class="seller-form__demo">
+        <Icon name="info" />
+        <span>
+          <strong>Demo form.</strong> Nothing you type here is sent or stored.
+        </span>
+      </p>
+    )
+  }
+
+  <form id="seller-form" class="form-grid" novalidate aria-labelledby="seller-form-title" data-seller-form data-current="1">
+    <div>
+      <h2 id="seller-form-title" class="seller-form__title">Start a confidential inquiry</h2>
+      <p class="small muted">Three short steps, about two minutes. Fields marked optional can be left blank.</p>
+    </div>
+
+    <div class="form-progress" aria-hidden="true">
+      <ol class="form-progress__bar" role="list">
+        {steps.map((name, i) => <li data-progress-seg={i + 1}>{name}</li>)}
+      </ol>
+    </div>
+    <p class="visually-hidden" aria-live="polite" data-progress-text></p>
+
+    <div class="error-summary" tabindex="-1" aria-labelledby="seller-errors-title" hidden>
+      <h3 id="seller-errors-title" data-error-count>Please fix the answers below</h3>
+      <ul></ul>
+    </div>
+
+    <div class="notice notice--error" data-submit-error tabindex="-1" hidden>
+      <Icon name="circle-alert" />
+      <p>
+        <strong>We couldn’t send your inquiry.</strong> Your answers are still here. Please try again in a moment.
+      </p>
+    </div>
+
+    <fieldset class="form-grid form-step" data-form-step="1" tabindex="-1">
+      <legend class="seller-form__group"><span class="seller-form__step">Step 1 of 3</span>About you</legend>
+      <div class="form-grid form-grid--2">
+        <div class="field">
+          <label class="label" for="seller-name">Your name</label>
+          <input
+            class="input"
+            id="seller-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            aria-describedby="seller-name-error"
+            data-error-required="Enter your name."
+          />
+          <p class="field-error" id="seller-name-error"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="seller-email">Email</label>
+          <input
+            class="input"
+            id="seller-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            spellcheck="false"
+            required
+            aria-describedby="seller-email-error"
+            data-error-required="Enter your email address."
+            data-error-format="Enter an email address like name@example.com."
+          />
+          <p class="field-error" id="seller-email-error"></p>
+        </div>
+        <fieldset class="field span-2" aria-describedby="contactMethod-error" data-error-required="Choose how you’d like to be contacted.">
+          <legend>Preferred contact method</legend>
+          <div class="choice-list choice-list--inline">
+            {
+              ['Email', 'Phone', 'Either'].map((method) => (
+                <label class="choice">
+                  <input type="radio" name="contactMethod" value={method.toLowerCase()} required />
+                  {method}
+                </label>
+              ))
+            }
+          </div>
+          <p class="field-error" id="contactMethod-error"></p>
+        </fieldset>
+        <div class="field">
+          <label class="label" for="seller-phone">
+            Phone <span class="optional" data-phone-optional>(optional)</span>
+          </label>
+          <input
+            class="input"
+            id="seller-phone"
+            name="phone"
+            type="tel"
+            autocomplete="tel"
+            inputmode="tel"
+            pattern="[0-9()+.\- ]{7,}"
+            aria-describedby="seller-phone-hint seller-phone-error"
+            data-error-required="Enter a phone number, or choose email as your preferred contact method."
+            data-error-format="Enter a phone number using digits, spaces, dashes or brackets."
+          />
+          <p class="hint" id="seller-phone-hint">Only used to arrange a call if you prefer one.</p>
+          <p class="field-error" id="seller-phone-error"></p>
+        </div>
+
+      </div>
+    </fieldset>
+
+    <fieldset class="form-grid form-step" data-form-step="2" tabindex="-1">
+      <legend class="seller-form__group"><span class="seller-form__step">Step 2 of 3</span>The business</legend>
+      <div class="form-grid form-grid--2">
+        <div class="field span-2">
+          <label class="label" for="seller-company">Company name <span class="optional">(optional)</span></label>
+          <input
+            class="input"
+            id="seller-company"
+            name="company"
+            type="text"
+            autocomplete="organization"
+            aria-describedby="seller-company-error"
+          />
+          <label class="check">
+            <input type="checkbox" name="shareCompanyLater" data-company-later />
+            I’d rather share my company name after our first conversation.
+          </label>
+          <p class="field-error" id="seller-company-error"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="seller-industry">Industry</label>
+          <select
+            class="select"
+            id="seller-industry"
+            name="industry"
+            required
+            aria-describedby="seller-industry-error"
+            data-error-required="Choose the industry closest to your business."
+          >
+            <option value="">Choose an industry</option>
+            {INDUSTRIES.map((industry) => <option>{industry}</option>)}
+          </select>
+          <p class="field-error" id="seller-industry-error"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="seller-city">City or region</label>
+          <input
+            class="input"
+            id="seller-city"
+            name="city"
+            type="text"
+            autocomplete="address-level2"
+            required
+            aria-describedby="seller-city-error"
+            data-error-required="Enter the city or region where the business operates."
+          />
+          <p class="field-error" id="seller-city-error"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="seller-state">State</label>
+          <select
+            class="select"
+            id="seller-state"
+            name="state"
+            autocomplete="address-level1"
+            required
+            aria-describedby="seller-state-error"
+            data-error-required="Choose a state."
+          >
+            <option value="">Choose a state</option>
+            {US_STATES.map((s) => <option value={s.code}>{s.name}</option>)}
+          </select>
+          <p class="field-error" id="seller-state-error"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="seller-revenue">Approximate annual revenue</label>
+          <select
+            class="select"
+            id="seller-revenue"
+            name="revenue"
+            required
+            aria-describedby="seller-revenue-error"
+            data-error-required="Choose a revenue range, or “I’d rather not say yet”."
+          >
+            <option value="">Choose a range</option>
+            {revenueRanges.map((range) => <option>{range}</option>)}
+          </select>
+          <p class="field-error" id="seller-revenue-error"></p>
+        </div>
+        <div class="field">
+          <label class="label" for="seller-employees">Number of employees</label>
+          <select
+            class="select"
+            id="seller-employees"
+            name="employees"
+            required
+            aria-describedby="seller-employees-error"
+            data-error-required="Choose an employee range."
+          >
+            <option value="">Choose a range</option>
+            {employeeRanges.map((range) => <option>{range}</option>)}
+          </select>
+          <p class="field-error" id="seller-employees-error"></p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-grid form-step" data-form-step="3" tabindex="-1">
+      <legend class="seller-form__group"><span class="seller-form__step">Step 3 of 3</span>Timing</legend>
+      <fieldset class="field" aria-describedby="stage-error" data-error-required="Tell us where you are in your thinking.">
+        <legend>Where are you in your thinking?</legend>
+        <div class="choice-list">
+          {
+            stages.map((stage) => (
+              <label class="choice">
+                <input type="radio" name="stage" value={stage.value} required />
+                {stage.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-error" id="stage-error"></p>
+      </fieldset>
+      <div class="field">
+        <label class="label" for="seller-notes">
+          What’s prompting you to explore a sale? <span class="optional">(optional)</span>
+        </label>
+        <textarea
+          class="textarea"
+          id="seller-notes"
+          name="notes"
+          maxlength="1200"
+          aria-describedby="seller-notes-hint seller-notes-error"></textarea>
+        <p class="hint" id="seller-notes-hint">
+          A sentence or two is plenty. Please don’t include financial statements, account numbers or other
+          confidential documents. Those come later, through a secure channel.
+        </p>
+        <p class="field-error" id="seller-notes-error"></p>
+      </div>
+
+    <div class="field">
+      <label class="check">
+        <input
+          type="checkbox"
+          id="seller-consent"
+          name="consent"
+          required
+          aria-describedby="seller-consent-error"
+          data-error-required="Please confirm you’re happy to be contacted about your inquiry."
+        />
+        <span>I’m happy to be contacted about this inquiry, and I’ve read the privacy notice below.</span>
+      </label>
+      <p class="field-error" id="seller-consent-error"></p>
+    </div>
+
+    <p class="seller-form__privacy xs muted">
+      <strong>Privacy notice:</strong> Your details would be used only to respond to your inquiry. They would not be
+      shared with buyers or anyone else without your permission.
+      {OWNER_FACTS.privacyPolicyUrl && <Fragment> <a href={OWNER_FACTS.privacyPolicyUrl}>Read the full privacy policy</a>.</Fragment>}
+      {IS_DEMO && <span> In this demo, nothing is transmitted or saved.</span>}
+    </p>
+    </fieldset>
+
+    <div class="seller-form__actions">
+      <div class="btn-row">
+      <button class="btn btn--secondary" type="button" data-step-back>Back</button>
+      <button class="btn" type="button" data-step-next data-magnetic>
+        Continue
+        <Icon name="arrow-right" class="icon--nudge" />
+      </button>
+      <button class="btn" type="submit" data-submit data-magnetic>
+        <span class="spinner-wrap" data-spinner hidden><Icon name="loader-circle" class="spinner" /></span>
+        <span data-label>Send my inquiry</span>
+        <Icon name="arrow-right" class="icon--nudge" />
+      </button>
+      </div>
+      <p class="xs muted">No obligation. Sending this doesn’t commit you to anything.</p>
+    </div>
+    <noscript>
+      <p class="notice notice--warn">This demo form needs JavaScript to work.</p>
+    </noscript>
+  </form>
+
+  <div class="seller-form__success" data-success tabindex="-1" aria-labelledby="seller-success-title" hidden>
+    <span class="seller-form__success-icon"><Icon name="check" /></span>
+    <h2 id="seller-success-title">Thanks<span data-success-name></span>. Your inquiry is ready.</h2>
+    {
+      IS_DEMO && (
+        <p class="notice">
+          <Icon name="info" />
+          <span>
+            <strong>Demo only:</strong> nothing was sent. On the live site, your inquiry would go to Rob at this
+            point.
+          </span>
+        </p>
+      )
+    }
+    <h3>What happens next</h3>
+    <ol class="seller-form__next">
+      <li>Rob reviews your inquiry.{OWNER_FACTS.responseTime && <Fragment> Expect a reply <Fact name="responseTime" />.</Fragment>}</li>
+      <li>You’ll hear back by your preferred contact method to arrange a first conversation.</li>
+      <li>That first conversation is private and carries no obligation to list or sell.</li>
+    </ol>
+    <div class="btn-row">
+      <a class="btn btn--secondary" href="/businesses">Browse businesses</a>
+      <button class="btn btn--secondary" type="button" data-reset-form>Start a new inquiry</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '../scripts/seller-form';
+</script>
+
+<style>
+  .seller-form {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+    box-shadow: var(--shadow);
+  }
+  .seller-form__demo {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    margin-bottom: var(--space-5);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--amber-50);
+    color: #4d3300;
+    font-size: var(--fs-xs);
+  }
+  .seller-form__demo .icon {
+    margin-top: 0.1rem;
+    color: var(--amber-800);
+  }
+  .seller-form__title {
+    font-size: clamp(1.6rem, 1.4rem + 0.8vw, 2rem);
+    margin-bottom: var(--space-2);
+  }
+  .seller-form__step {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-family: var(--font-body-stack);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cobalt-600);
+  }
+  .form-step:focus-visible {
+    outline: none;
+  }
+  .form-progress__bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+  .form-progress__bar li {
+    position: relative;
+    padding-top: var(--space-3);
+    transition: color 0.4s ease;
+  }
+  .form-progress__bar li::before,
+  .form-progress__bar li::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--line);
+  }
+  .form-progress__bar li::after {
+    background: linear-gradient(90deg, var(--cobalt-600), var(--cobalt-500));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s var(--ease-out-expo);
+  }
+  .form-progress__bar li.is-current,
+  .form-progress__bar li.is-done {
+    color: var(--navy-900);
+  }
+  .form-progress__bar li.is-current::after,
+  .form-progress__bar li.is-done::after {
+    transform: none;
+  }
+
+  /* Step visibility is JS-driven; without JavaScript every step shows at once. */
+  :global(html:not(.js)) .form-progress,
+  :global(html:not(.js)) [data-step-next],
+  :global(html:not(.js)) [data-step-back],
+  :global(html:not(.js)) .seller-form__step {
+    display: none;
+  }
+  :global(.js) form[data-current='1'] [data-form-step]:not([data-form-step='1']),
+  :global(.js) form[data-current='2'] [data-form-step]:not([data-form-step='2']),
+  :global(.js) form[data-current='3'] [data-form-step]:not([data-form-step='3']),
+  :global(.js) form[data-current='1'] [data-step-back],
+  :global(.js) form[data-current='3'] [data-step-next],
+  :global(.js) form:not([data-current='3']) [data-submit] {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .form-step {
+      animation: step-in 0.6s var(--ease-out-expo);
+    }
+  }
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+  }
+  .seller-form__group {
+    width: 100%;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display-stack);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--navy-900);
+  }
+  .seller-form__actions {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+  .seller-form__privacy {
+    padding-top: var(--space-2);
+  }
+  .seller-form__success {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .seller-form__success:focus-visible {
+    outline: none;
+  }
+  .seller-form__success h2 {
+    font-size: clamp(1.6rem, 1.4rem + 0.8vw, 2.1rem);
+  }
+  .seller-form__success h3 {
+    margin-top: var(--space-2);
+  }
+  .seller-form__success-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--green-50);
+    color: var(--green-700);
+  }
+  .seller-form__next {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: 1.25rem;
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+// Mobile-only call to action that appears once the hero has scrolled away and hides near forms
+// and the footer. Visibility is controlled by scripts/motion.ts.
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  label: string;
+}
+const { href, label } = Astro.props;
+---
+
+<div class="sticky-cta" data-sticky-cta>
+  <a class="btn btn--block" href={href}>
+    {label}
+    <Icon name="arrow-right" class="icon--nudge" />
+  </a>
+</div>
+
+<style>
+  .sticky-cta {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.92) 35%);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      visibility 0s linear 0.45s;
+  }
+  .sticky-cta[data-visible] {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      visibility 0s;
+  }
+  @media (min-width: 48rem) {
+    .sticky-cta {
+      display: none;
+    }
+  }
+</style>

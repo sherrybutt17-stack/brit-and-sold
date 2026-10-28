@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Phrases; wrap words in *asterisks* for an italic accent. */
+  items: string[];
+  label: string;
+}
+
+const { items, label } = Astro.props;
+const parts = (item: string) => item.split(/(\*[^*]+\*)/).filter(Boolean);
+---
+
+<div class="marquee" data-marquee role="region" aria-label={label}>
+  <div class="marquee__track">
+    {
+      [false, true].map((duplicate) => (
+        <ul class="marquee__set" role="list" aria-hidden={duplicate ? 'true' : undefined}>
+          {items.map((item) => (
+            <li class="marquee__item">
+              <span>{parts(item).map((p) => (p.startsWith('*') ? <em>{p.slice(1, -1)}</em> : p))}</span>
+              <Icon name="sparkles" class="marquee__star" />
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>

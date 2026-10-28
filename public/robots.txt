@@ -1,0 +1,3 @@
+# Demo build: keep sample listings out of search engines until real content is approved.
+User-agent: *
+Disallow: /

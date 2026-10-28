@@ -1,0 +1,63 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import '../styles/effects.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { BRAND, IS_DEMO } from '../config/site';
+
+interface Props {
+  /** Page-specific title; the brand name is appended. */
+  title?: string;
+  description: string;
+  /** Mobile-only call to action pinned to the bottom of the screen after the hero. */
+  stickyCta?: { href: string; label: string };
+}
+
+const { title, description, stickyCta } = Astro.props;
+const fullTitle = title ? `${title} | ${BRAND.name}` : BRAND.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Prefetch same-site pages when a link is hovered or pressed (Chromium; ignored elsewhere).
+const speculationRules = JSON.stringify({
+  prefetch: [{ where: { href_matches: '/*' }, eagerness: 'moderate' }],
+});
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {IS_DEMO && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a1a33" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={BRAND.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <script type="speculationrules" is:inline set:html={speculationRules} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    {stickyCta && <StickyCta href={stickyCta.href} label={stickyCta.label} />}
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

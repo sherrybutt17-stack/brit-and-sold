@@ -1,0 +1,533 @@
+---
+import DemoNotice from '../../components/DemoNotice.astro';
+import Icon from '../../components/Icon.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import PageHero from '../../components/PageHero.astro';
+import RequestDetailsDialog from '../../components/RequestDetailsDialog.astro';
+import SplitText from '../../components/SplitText.astro';
+import {
+  PRICE_BUCKETS,
+  PRICE_UNDISCLOSED,
+  REVENUE_BUCKETS,
+  SIZE_BUCKETS,
+  SORT_OPTIONS,
+  STATUS_OPTIONS,
+} from '../../data/filters';
+import { stateName } from '../../data/us';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { employeesMidpoint, getPublicListings, type PublicListing } from '../../lib/listings';
+
+const listings = getPublicListings();
+const industries = [...new Set(listings.map((l) => l.industry))].sort();
+const states = [...new Set(listings.map((l) => l.state))].sort((a, b) => stateName(a).localeCompare(stateName(b)));
+
+// Search runs only over text that is already public on the card.
+const searchText = (l: PublicListing) =>
+  [l.title, l.industry, l.locationLabel, stateName(l.state), l.overview, ...l.strengths, ...l.growthOpportunities]
+    .join(' ')
+    .toLowerCase();
+
+const buyerSteps = [
+  { icon: 'search', title: 'Browse', text: 'Public listings show what each seller has approved for release.' },
+  { icon: 'list-checks', title: 'Request details', text: 'A few qualification questions about you and your plans.' },
+  { icon: 'shield-check', title: 'Agree to confidentiality', text: 'Sign an NDA before identifying details are shared.' },
+  { icon: 'file-text', title: 'Review and talk', text: 'Receive the information package and discuss next steps.' },
+] as const;
+---
+
+<BaseLayout
+  title="Businesses for Sale"
+  description="Browse businesses for sale. Search by industry, location, revenue, asking price and size, then request details to start the confidential qualification process."
+>
+  <PageHero variant="compact">
+    <div class="dir-intro__inner">
+      <div>
+        <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">Buy a business</p>
+        <SplitText as="h1" mode="load" class="dir-intro__title" text="Businesses *for sale*" />
+        <p class="lead load-in" style="--d: 0.35s">
+          Each listing shows what the seller has approved for public view. Full details, including the business name,
+          are shared with qualified buyers after a confidentiality agreement.
+        </p>
+      </div>
+      <div class="load-in" style="--d: 0.5s">
+        <DemoNotice title="Sample listings.">
+          Every business on this page is fictional and is here only to demonstrate the layout and filters. None of them
+          are real opportunities, and the figures are illustrative.
+        </DemoNotice>
+      </div>
+    </div>
+  </PageHero>
+
+  <section class="directory lift" aria-labelledby="results-heading">
+    <div class="container directory__layout">
+      <form id="filters" class="filters" role="search" aria-label="Filter businesses" data-directory-filters>
+        <div class="field filters__search">
+          <label class="label" for="f-q">Search listings</label>
+          <div class="search-input">
+            <Icon name="search" />
+            <input
+              class="input"
+              id="f-q"
+              name="q"
+              type="search"
+              placeholder="Industry, region or keyword"
+              autocomplete="off"
+              enterkeyhint="search"
+            />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn--secondary btn--block filters__toggle"
+          aria-expanded="false"
+          aria-controls="filter-panel"
+          data-filters-toggle
+        >
+          <Icon name="sliders-horizontal" />
+          Filters
+          <span class="filters__count" data-filter-count hidden></span>
+        </button>
+
+        <div id="filter-panel" class="filters__panel" data-filters-panel>
+          <div class="field">
+            <label class="label" for="f-industry">Industry</label>
+            <select class="select" id="f-industry" name="industry">
+              <option value="">All industries</option>
+              {industries.map((industry) => <option>{industry}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="f-state">Location</label>
+            <select class="select" id="f-state" name="state">
+              <option value="">All states</option>
+              {states.map((code) => <option value={code}>{stateName(code)}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="f-revenue">Annual revenue</label>
+            <select class="select" id="f-revenue" name="revenue">
+              <option value="">Any revenue</option>
+              {REVENUE_BUCKETS.map((b) => <option value={b.id}>{b.label}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="f-price">Asking price</label>
+            <select class="select" id="f-price" name="price">
+              <option value="">Any price</option>
+              {PRICE_BUCKETS.map((b) => <option value={b.id}>{b.label}</option>)}
+              <option value={PRICE_UNDISCLOSED.id}>{PRICE_UNDISCLOSED.label}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="f-size">Company size</label>
+            <select class="select" id="f-size" name="size">
+              <option value="">Any size</option>
+              {SIZE_BUCKETS.map((b) => <option value={b.id}>{b.label}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="f-status">Status</label>
+            <select class="select" id="f-status" name="status">
+              <option value="">Any status</option>
+              {STATUS_OPTIONS.map((s) => <option value={s.id}>{s.label}</option>)}
+            </select>
+          </div>
+          <div class="filters__actions">
+            <button type="button" class="btn btn--secondary btn--sm" data-reset-filters>
+              <Icon name="rotate-ccw" />
+              Reset filters
+            </button>
+            <button type="button" class="btn btn--sm filters__done" data-filters-done>Show results</button>
+          </div>
+        </div>
+        <noscript>
+          <p class="xs muted">Filters need JavaScript. All listings are shown.</p>
+        </noscript>
+      </form>
+
+      <div class="results" aria-busy="false" data-results>
+        <h2 id="results-heading" class="visually-hidden">Listings</h2>
+        <div class="results__bar">
+          <p class="results__count" role="status" tabindex="-1" data-results-count>
+            Showing all {listings.length} sample listings
+          </p>
+          <div class="results__sort">
+            <label class="label" for="f-sort">Sort by</label>
+            <select class="select" id="f-sort" name="sort" form="filters">
+              {SORT_OPTIONS.map((o) => <option value={o.id}>{o.label}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <ul class="chips" role="list" aria-label="Active filters" data-chips hidden></ul>
+        <template id="chip-icon"><Icon name="x" /></template>
+
+        <ul class="listing-grid stagger" role="list" data-listing-grid hidden={listings.length === 0}>
+          {
+            listings.map((listing, i) => (
+              <li
+                style={`--i: ${i}`}
+                data-listing
+                data-id={listing.id}
+                data-industry={listing.industry}
+                data-state={listing.state}
+                data-revenue={listing.revenue}
+                data-price={listing.askingPrice ?? ''}
+                data-size={employeesMidpoint(listing.employees)}
+                data-status={listing.status}
+                data-listed={listing.listedAt}
+                data-search={searchText(listing)}
+              >
+                <ListingCard listing={listing} />
+              </li>
+            ))
+          }
+        </ul>
+
+        <ul class="listing-grid" role="list" aria-hidden="true" data-results-loading hidden>
+          {Array.from({ length: 4 }, () => <li class="skeleton" />)}
+        </ul>
+
+        <div class="results-state card" data-results-empty hidden>
+          <span class="results-state__icon"><Icon name="search" /></span>
+          <h3>No businesses match those filters</h3>
+          <p class="muted">
+            Try removing a filter or using a broader search term. Or tell us what you’re looking for, so Rob knows what
+            kind of business to keep in mind.
+          </p>
+          <div class="btn-row">
+            <button type="button" class="btn btn--secondary" data-reset-filters>
+              <Icon name="rotate-ccw" />
+              Reset filters
+            </button>
+            <button type="button" class="btn" data-open-request>Tell us what you’re looking for</button>
+          </div>
+        </div>
+
+        <div class="results-state card" data-results-none hidden={listings.length > 0}>
+          <span class="results-state__icon"><Icon name="briefcase" /></span>
+          <h3>No businesses are listed right now</h3>
+          <p class="muted">
+            New opportunities are added as sellers approve them for release. Tell us what you’re looking for and you’ll
+            be in the conversation when something suitable comes up.
+          </p>
+          <div class="btn-row">
+            <button type="button" class="btn" data-open-request>Tell us what you’re looking for</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sky buyer-cta" aria-labelledby="buyer-cta-title">
+    <div class="container buyer-cta__inner">
+      <div class="buyer-cta__copy">
+        <p class="eyebrow" data-reveal>For buyers</p>
+        <SplitText id="buyer-cta-title" text="Looking for something *specific?*" />
+        <p class="lead">
+          Share the kind of business, location and budget you have in mind. It’s the same short qualification step
+          used for individual listings, and it helps Rob understand what you’re looking for.
+        </p>
+        <button type="button" class="btn" data-open-request data-magnetic>
+          Tell us what you’re looking for
+          <Icon name="arrow-right" class="icon--nudge" />
+        </button>
+      </div>
+      <ol class="buyer-steps" role="list" data-reveal style="--reveal-delay: 1">
+        {
+          buyerSteps.map((step, i) => (
+            <li data-spotlight>
+              <span class="buyer-steps__icon">
+                <Icon name={step.icon} />
+              </span>
+              <div>
+                <h3>
+                  <span class="visually-hidden">Step {i + 1}: </span>
+                  {step.title}
+                </h3>
+                <p class="small muted">{step.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <RequestDetailsDialog />
+</BaseLayout>
+
+<script>
+  import '../../scripts/directory';
+</script>
+
+<style>
+  .dir-intro__inner {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 64rem) {
+    .dir-intro__inner {
+      grid-template-columns: 1.4fr 1fr;
+      align-items: end;
+      gap: var(--space-8);
+    }
+  }
+  .dir-intro__inner .eyebrow {
+    margin-bottom: var(--space-4);
+  }
+  .dir-intro__inner :global(.dir-intro__title) {
+    margin-bottom: var(--space-4);
+    font-size: clamp(2.6rem, 1.6rem + 4vw, 4.8rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+  }
+  .dir-intro__inner :global(.dir-intro__title em) {
+    color: var(--sky-300);
+  }
+  .dir-intro__inner :global(.demo-notice) {
+    border-color: rgb(242 212 143 / 0.35);
+    background: rgb(255 243 214 / 0.07);
+    color: var(--on-dark);
+  }
+  .dir-intro__inner :global(.demo-notice .icon) {
+    color: #f2d48f;
+  }
+  .dir-intro__inner :global(.demo-notice strong) {
+    color: var(--white);
+  }
+
+  .directory {
+    padding-block: clamp(2rem, 1.4rem + 2vw, 3.5rem) var(--section-y);
+  }
+  .buyer-cta__copy :global(h2 em) {
+    color: var(--cobalt-600);
+  }
+  .directory__layout {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 64rem) {
+    .directory__layout {
+      grid-template-columns: 17rem minmax(0, 1fr);
+      gap: var(--space-7);
+      align-items: start;
+    }
+    .filters {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+  }
+
+  .filters {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .search-input {
+    position: relative;
+  }
+  .search-input .icon {
+    position: absolute;
+    top: 50%;
+    left: 0.85rem;
+    color: var(--ink-muted);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .search-input .input {
+    padding-left: 2.6rem;
+  }
+  .filters__panel {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .filters__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .filters__toggle,
+  .filters__done {
+    display: none;
+  }
+  .filters__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    padding-inline: 0.35rem;
+    border-radius: 999px;
+    background: var(--cobalt-600);
+    color: var(--white);
+    font-size: var(--fs-xs);
+  }
+  @media (max-width: 63.99rem) {
+    :global(.js) .filters__toggle {
+      display: inline-flex;
+    }
+    :global(.js) .filters__panel:not(.is-open) {
+      display: none;
+    }
+    :global(.js) .filters__done {
+      display: inline-flex;
+    }
+    .filters__panel {
+      padding: var(--space-5);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--mist);
+    }
+    @media (min-width: 40rem) {
+      .filters__panel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .filters__actions {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  .results__bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+  .results__count {
+    font-weight: 600;
+    color: var(--navy-900);
+  }
+  .results__count:focus-visible {
+    outline-offset: 4px;
+  }
+  .results__sort {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .results__sort .label {
+    white-space: nowrap;
+  }
+  .results__sort .select {
+    min-height: 2.6rem;
+    padding-block: 0.4rem;
+    font-size: var(--fs-small);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+  .chips :global(.chip) {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.55rem 0.3rem 0.85rem;
+    border: 1px solid var(--sky-200);
+    border-radius: 999px;
+    background: var(--sky-50);
+    color: var(--navy-800);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+  }
+  .chips :global(.chip:hover) {
+    border-color: var(--cobalt-600);
+  }
+  .chips :global(.chip .icon) {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-5);
+  }
+  .skeleton {
+    height: 22rem;
+    border-radius: var(--radius);
+    background: var(--mist);
+    border: 1px solid var(--line);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton {
+      animation: pulse 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes pulse {
+      to {
+        opacity: 0.45;
+      }
+    }
+  }
+
+  .results-state {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .results-state__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--sky-100);
+    color: var(--cobalt-600);
+  }
+  .results-state .btn-row {
+    margin-top: var(--space-2);
+  }
+
+  .buyer-cta__inner {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64rem) {
+    .buyer-cta__inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: var(--space-8);
+    }
+  }
+  .buyer-cta__copy {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .buyer-cta__copy .eyebrow {
+    margin-bottom: 0;
+  }
+  .buyer-steps {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .buyer-steps li {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--sky-200);
+    border-radius: var(--radius);
+    background: var(--white);
+  }
+  .buyer-steps h3 {
+    font-size: 1.15rem;
+  }
+  .buyer-steps__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--sky-100);
+    color: var(--cobalt-600);
+  }
+</style>

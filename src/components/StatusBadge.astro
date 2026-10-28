@@ -1,0 +1,11 @@
+---
+import type { ListingStatus } from '../data/listings';
+import { STATUS_LABELS } from '../lib/listings';
+
+interface Props {
+  status: ListingStatus;
+}
+const { status } = Astro.props;
+---
+
+<span class:list={['badge', `badge--${status}`]}><span class="visually-hidden">Status: </span>{STATUS_LABELS[status]}</span>

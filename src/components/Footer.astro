@@ -1,0 +1,191 @@
+---
+import { BRAND, CTA, IS_DEMO, NAV, OWNER_FACTS, ROB_LINKS } from '../config/site';
+import Icon from './Icon.astro';
+import Aurora from './Aurora.astro';
+import Wordmark from './Wordmark.astro';
+
+const year = new Date().getFullYear();
+const hasDirectContact = Boolean(OWNER_FACTS.email || OWNER_FACTS.phone);
+---
+
+<footer class="site-footer navy">
+  <Aurora />
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a href="/" class="site-footer__home"><Wordmark tone="light" /><span class="visually-hidden">, home</span></a>
+        <p class="muted small">
+          Business brokerage for owners exploring a sale, and for buyers looking for their next business.
+        </p>
+        <a class="btn btn--on-dark btn--sm" href={CTA.sell.href} data-magnetic>
+          {CTA.sell.label}
+          <Icon name="arrow-right" class="icon--nudge" />
+        </a>
+      </div>
+
+      <nav aria-label="Footer">
+        <h2 class="site-footer__title">Explore</h2>
+        <ul role="list">
+          <li><a href="/">Home</a></li>
+          {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="site-footer__title">For owners</h2>
+        <ul role="list">
+          <li><a href="/sell#inquiry">Start a confidential inquiry</a></li>
+          <li><a href="/sell#process">How a sale works</a></li>
+          <li><a href="/sell#readiness">What buyers will ask about</a></li>
+          <li><a href="/sell#faq">Questions owners ask</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__title">{hasDirectContact ? 'Contact' : 'Find Rob online'}</h2>
+        <ul role="list" class="site-footer__contact">
+          {
+            OWNER_FACTS.email && (
+              <li>
+                <Icon name="mail" />
+                <a href={`mailto:${OWNER_FACTS.email}`}>{OWNER_FACTS.email}</a>
+              </li>
+            )
+          }
+          {
+            OWNER_FACTS.phone && (
+              <li>
+                <Icon name="phone" />
+                <a href={`tel:${OWNER_FACTS.phone.replace(/[^0-9+]/g, '')}`}>{OWNER_FACTS.phone}</a>
+              </li>
+            )
+          }
+          <li>
+            <Icon name="arrow-up-right" /><a href={ROB_LINKS.website} rel="noopener">robdawson.tv</a>
+          </li>
+          <li>
+            <Icon name="arrow-up-right" /><a href={ROB_LINKS.linkedin} rel="noopener">Rob on LinkedIn</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="site-footer__mark" aria-hidden="true">Brit <em>and</em> Sold</p>
+
+    <div class="site-footer__legal">
+      {
+        IS_DEMO && (
+          <p class="site-footer__demo">
+            <strong>Demo build.</strong> Every business listed on this site is a fictional sample, contact details and
+            terms are placeholders, and the forms do not send or store anything.
+          </p>
+        )
+      }
+      <p>
+        Nothing on this site guarantees a sale, price, buyer, timeline, tax or financing outcome. Listing information
+        is provided by sellers and should be independently verified.
+      </p>
+      <p>
+        © {year} {BRAND.name}
+        {OWNER_FACTS.privacyPolicyUrl && <Fragment> · <a href={OWNER_FACTS.privacyPolicyUrl}>Privacy policy</a></Fragment>}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem) var(--space-6);
+    border-top: 1px solid rgb(156 195 255 / 0.1);
+    background: var(--navy-950);
+    font-size: var(--fs-small);
+  }
+  .site-footer :global(.aurora) {
+    opacity: 0.55;
+  }
+  .site-footer__mark {
+    margin-top: var(--space-8);
+    font-family: var(--font-display-stack);
+    font-size: clamp(3.25rem, 0.5rem + 13.8vw, 14rem);
+    font-weight: 500;
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+    background: linear-gradient(180deg, rgb(156 195 255 / 0.4), rgb(156 195 255 / 0.03) 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    user-select: none;
+  }
+  .site-footer__mark em {
+    font-weight: 400;
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: var(--space-7) var(--space-6);
+  }
+  @media (min-width: 40rem) {
+    .site-footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .site-footer__grid {
+      grid-template-columns: 1.6fr 1fr 1.2fr 1.3fr;
+    }
+  }
+  .site-footer__brand {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    max-width: 22rem;
+  }
+  .site-footer__home {
+    text-decoration: none;
+  }
+  .site-footer__title {
+    margin-bottom: var(--space-4);
+    font-family: var(--font-body-stack);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sky-300);
+  }
+  ul {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .site-footer a:not(.btn) {
+    color: var(--on-dark);
+    text-decoration: none;
+  }
+  .site-footer a:not(.btn):hover {
+    color: var(--white);
+    text-decoration: underline;
+  }
+  .site-footer__contact li {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+  .site-footer__contact .icon {
+    margin-top: 0.2rem;
+    color: var(--sky-300);
+  }
+  .site-footer__legal {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid rgb(156 195 255 / 0.16);
+    font-size: var(--fs-xs);
+    color: var(--on-dark-muted);
+  }
+  .site-footer__demo strong {
+    color: var(--white);
+  }
+</style>

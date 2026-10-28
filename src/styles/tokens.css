@@ -1,0 +1,93 @@
+/* Design tokens — Brit and Sold with Rob Dawson.
+   Blue is the brand color; neutrals stay cool and quiet. Contrast notes are against the
+   background each token is meant to sit on (WCAG AA = 4.5:1 for body text). */
+:root {
+  /* Navy — bands, footer, headings */
+  --navy-950: #071226;
+  --navy-900: #0a1a33;
+  --navy-800: #0f2547;
+  --navy-700: #193663;
+
+  /* Cobalt — primary actions and links (#1F4FD1 on white ≈ 6.4:1) */
+  --cobalt-700: #1a3fa8;
+  --cobalt-600: #1f4fd1;
+  --cobalt-500: #3a6be8;
+
+  /* Light blue — accents on navy (#9CC3FF on navy-900 ≈ 9:1) and tinted panels */
+  --sky-300: #9cc3ff;
+  --sky-200: #c7dcff;
+  --sky-100: #e6f0ff;
+  --sky-50: #f3f7ff;
+
+  /* Neutrals */
+  --white: #ffffff;
+  --mist: #f6f8fb;
+  --line: #e1e7ef;
+  --line-strong: #c9d2df;
+  --ink: #16202f;          /* body text, ≈ 16:1 on white */
+  --ink-muted: #4f5d75;    /* secondary text, ≈ 6.6:1 on white */
+  --on-dark: #e8eefb;      /* body text on navy */
+  --on-dark-muted: #aebbd3; /* secondary text on navy, ≈ 8:1 on navy-900 */
+
+  /* Status */
+  --green-700: #0b6b45;
+  --green-50: #e3f4ec;
+  --amber-800: #7a4d00;
+  --amber-50: #fff3d6;
+  --slate-700: #3d4a5c;
+  --slate-50: #eceff4;
+  --red-700: #b42318;
+  --red-50: #fdecea;
+
+  /* Type */
+  --font-display-stack: var(--font-display), Georgia, serif;
+  --font-body-stack: var(--font-body), Arial, sans-serif;
+  --fs-display: clamp(2.5rem, 1.55rem + 4.1vw, 4.75rem);
+  --fs-h1: clamp(2.25rem, 1.6rem + 2.8vw, 3.75rem);
+  --fs-h2: clamp(1.85rem, 1.4rem + 1.7vw, 2.75rem);
+  --fs-h3: clamp(1.2rem, 1.12rem + 0.35vw, 1.4rem);
+  --fs-lead: clamp(1.1rem, 1.04rem + 0.3vw, 1.3rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.9375rem;
+  --fs-xs: 0.8125rem;
+
+  /* Space */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --section-y: clamp(4rem, 2.8rem + 5vw, 7.5rem);
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --container: 75rem;
+
+  /* Shape and depth */
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 2px rgb(10 26 51 / 0.06), 0 1px 1px rgb(10 26 51 / 0.04);
+  --shadow: 0 10px 30px -12px rgb(10 26 51 / 0.18), 0 2px 6px rgb(10 26 51 / 0.05);
+  --shadow-lg: 0 30px 60px -24px rgb(10 26 51 / 0.32);
+
+  /* Glass and glow (dark sections) */
+  --glass-bg: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.035));
+  --glass-border: rgb(156 195 255 / 0.2);
+  --glow-cobalt: rgb(31 79 209 / 0.9);
+  --glow-azure: rgb(58 139 255 / 0.6);
+  --glow-ice: rgb(140 190 255 / 0.4);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 150ms;
+  --dur: 240ms;
+  --dur-slow: 700ms;
+
+  --focus-ring: 0 0 0 3px var(--white), 0 0 0 5px var(--cobalt-600);
+  --header-h: 4.5rem;
+  --lift: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+}

@@ -1,0 +1,44 @@
+---
+// Typographic wordmark. Inherits its color from the parent; the "and" accent uses --wordmark-accent.
+interface Props {
+  tone?: 'dark' | 'light';
+}
+const { tone = 'dark' } = Astro.props;
+---
+
+<span class:list={['wordmark', { 'wordmark--light': tone === 'light' }]}>
+  <span class="wordmark__main">Brit <em class="wordmark__and">and</em> Sold</span>
+  <span class="wordmark__sub">with Rob Dawson</span>
+</span>
+
+<style>
+  .wordmark {
+    display: inline-grid;
+    line-height: 1;
+    color: inherit;
+  }
+  .wordmark--light {
+    --wordmark-accent: var(--sky-300);
+    color: var(--white);
+  }
+  .wordmark__main {
+    font-family: var(--font-display-stack);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .wordmark__and {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wordmark-accent, var(--cobalt-600));
+    transition: color 0.3s ease;
+  }
+  .wordmark__sub {
+    margin-top: 0.3rem;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+</style>

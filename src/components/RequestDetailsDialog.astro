@@ -1,0 +1,364 @@
+---
+import { IS_DEMO } from '../config/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** The listing the buyer is asking about; omit for a general buyer inquiry. */
+  listingTitle?: string;
+}
+
+const { listingTitle } = Astro.props;
+const buyerTypes = [
+  'Individual / first-time buyer',
+  'Experienced owner-operator',
+  'Search fund or investor group',
+  'Existing company (strategic buyer)',
+];
+const funds = ['Under $100K', '$100K – $250K', '$250K – $500K', '$500K – $1M', '$1M+', 'I’d rather discuss this'];
+const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Just exploring'];
+---
+
+<dialog class="modal" id="request-dialog" aria-labelledby="request-title" data-request-dialog data-lenis-prevent>
+  <div class="modal__head">
+    <div>
+      <p class="modal__step" data-step-label>Step 1 of 3</p>
+      <h2 id="request-title" class="modal__title">
+        {listingTitle ? 'Request details' : 'Tell us what you’re looking for'}
+      </h2>
+      {listingTitle && <p class="small muted">For: {listingTitle}</p>}
+    </div>
+    <button class="modal__close" type="button" data-dialog-close>
+      <Icon name="x" />
+      <span class="visually-hidden">Close</span>
+    </button>
+  </div>
+
+  <ol class="modal__progress" role="list" aria-label="Progress">
+    <li data-progress="1" aria-current="step">Your details</li>
+    <li data-progress="2">Confidentiality</li>
+    <li data-progress="3">Done</li>
+  </ol>
+
+  {
+    IS_DEMO && (
+      <p class="modal__demo">
+        <Icon name="info" />
+        <span>
+          <strong>Demo:</strong> nothing you enter here is sent or stored.
+        </span>
+      </p>
+    )
+  }
+
+  <!-- Step 1: qualification -->
+  <form class="form-grid modal__body" novalidate data-step="1">
+    <div class="error-summary" tabindex="-1" aria-labelledby="req-errors-1" hidden>
+      <h3 id="req-errors-1" data-error-count>Please fix the answers below</h3>
+      <ul></ul>
+    </div>
+
+    <p class="small muted">
+      A few questions help the seller understand who is asking. Qualified buyers are then asked to agree to
+      confidentiality before identifying details are shared.
+    </p>
+
+    <div class="form-grid form-grid--2">
+      <div class="field">
+        <label class="label" for="req-name">Full name</label>
+        <input class="input" id="req-name" name="name" autocomplete="name" autofocus required aria-describedby="req-name-error" data-error-required="Enter your full name." />
+        <p class="field-error" id="req-name-error"></p>
+      </div>
+      <div class="field">
+        <label class="label" for="req-email">Email</label>
+        <input class="input" id="req-email" name="email" type="email" autocomplete="email" spellcheck="false" required aria-describedby="req-email-error" data-error-required="Enter your email address." data-error-format="Enter an email address like name@example.com." />
+        <p class="field-error" id="req-email-error"></p>
+      </div>
+      <div class="field">
+        <label class="label" for="req-phone">Phone <span class="optional">(optional)</span></label>
+        <input class="input" id="req-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9()+.\- ]{7,}" aria-describedby="req-phone-error" data-error-format="Enter a phone number using digits, spaces, dashes or brackets." />
+        <p class="field-error" id="req-phone-error"></p>
+      </div>
+      <div class="field">
+        <label class="label" for="req-timeframe">When are you hoping to buy?</label>
+        <select class="select" id="req-timeframe" name="timeframe" required aria-describedby="req-timeframe-error" data-error-required="Choose a timeframe.">
+          <option value="">Choose a timeframe</option>
+          {timeframes.map((t) => <option>{t}</option>)}
+        </select>
+        <p class="field-error" id="req-timeframe-error"></p>
+      </div>
+    </div>
+
+    <fieldset class="field" aria-describedby="buyerType-error" data-error-required="Choose the option that best describes you.">
+      <legend>Which best describes you?</legend>
+      <div class="choice-list">
+        {
+          buyerTypes.map((type) => (
+            <label class="choice">
+              <input type="radio" name="buyerType" value={type} required />
+              {type}
+            </label>
+          ))
+        }
+      </div>
+      <p class="field-error" id="buyerType-error"></p>
+    </fieldset>
+
+    <div class="field">
+      <label class="label" for="req-funds">Funds available for a down payment or equity</label>
+      <select class="select" id="req-funds" name="funds" required aria-describedby="req-funds-hint req-funds-error" data-error-required="Choose a range, or “I’d rather discuss this”.">
+        <option value="">Choose a range</option>
+        {funds.map((f) => <option>{f}</option>)}
+      </select>
+      <p class="hint" id="req-funds-hint">A rough range is fine. Proof of funds is requested later, not here.</p>
+      <p class="field-error" id="req-funds-error"></p>
+    </div>
+
+    <div class="field">
+      <label class="label" for="req-background">
+        Your background and what you’re looking for <span class="optional">(optional)</span>
+      </label>
+      <textarea class="textarea" id="req-background" name="background" maxlength="1000" aria-describedby="req-background-error"></textarea>
+      <p class="field-error" id="req-background-error"></p>
+    </div>
+
+    <div class="modal__actions">
+      <button class="btn" type="submit">
+        <span data-label>Continue</span>
+        <Icon name="arrow-right" class="icon--nudge" />
+      </button>
+    </div>
+  </form>
+
+  <!-- Step 2: confidentiality -->
+  <form class="form-grid modal__body" novalidate data-step="2" hidden>
+    <div class="error-summary" tabindex="-1" aria-labelledby="req-errors-2" hidden>
+      <h3 id="req-errors-2" data-error-count>Please fix the answers below</h3>
+      <ul></ul>
+    </div>
+
+    <div class="nda" role="region" aria-labelledby="nda-title" tabindex="0">
+      <h3 id="nda-title"><Icon name="shield-check" /> Confidentiality agreement (summary)</h3>
+      <p class="xs muted">
+        Sample wording for this mockup, not a legal document.
+      </p>
+      <p class="small">By continuing, you would agree to:</p>
+      <ul class="small">
+        <li>use any information shared only to evaluate this acquisition;</li>
+        <li>keep the business’s identity and information confidential, sharing it only with your advisors;</li>
+        <li>not contact the business, its owner, employees, customers, suppliers or landlord directly;</li>
+        <li>return or destroy the information if asked.</li>
+      </ul>
+    </div>
+
+    <div class="field">
+      <label class="check">
+        <input type="checkbox" id="req-agree" name="agree" required aria-describedby="req-agree-error" data-error-required="Please confirm you agree to keep the information confidential." />
+        <span>I agree to keep any information I receive confidential.</span>
+      </label>
+      <p class="field-error" id="req-agree-error"></p>
+    </div>
+
+    <div class="field">
+      <label class="label" for="req-signature">Type your full name to sign</label>
+      <input class="input" id="req-signature" name="signature" autocomplete="name" required aria-describedby="req-signature-error" data-error-required="Type your full name to sign." />
+      <p class="field-error" id="req-signature-error"></p>
+    </div>
+
+    <div class="notice notice--error" data-submit-error tabindex="-1" hidden>
+      <Icon name="circle-alert" />
+      <p><strong>Something went wrong.</strong> Your answers are still here. Please try again.</p>
+    </div>
+
+    <div class="modal__actions">
+      <button class="btn btn--secondary" type="button" data-back>Back</button>
+      <button class="btn" type="submit" data-submit>
+        <span class="spinner-wrap" data-spinner hidden><Icon name="loader-circle" class="spinner" /></span>
+        <span data-label>Submit request</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Step 3: confirmation -->
+  <div class="modal__body modal__done" data-step="3" tabindex="-1" aria-labelledby="req-done-title" hidden>
+    <span class="modal__done-icon"><Icon name="check" /></span>
+    <h3 id="req-done-title">Request received{IS_DEMO && ' (demo)'}</h3>
+    <p>
+      On the live site, Rob would review your details, send the full confidentiality agreement for signature and, once
+      it is signed, share the information package{listingTitle ? ' for this business' : ' for businesses that fit'}.
+    </p>
+    {IS_DEMO && <p class="small muted">Nothing has been sent from this demo.</p>}
+    <div class="modal__actions">
+      <a class="btn btn--secondary" href="/businesses">Browse more businesses</a>
+      <button class="btn" type="button" data-dialog-close>Close</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import '../scripts/request-dialog';
+</script>
+
+<style>
+  .modal {
+    width: min(40rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: var(--shadow-lg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .modal::backdrop {
+    background: rgb(7 18 38 / 0.6);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .modal[open] {
+      animation: modal-in 260ms var(--ease-out);
+    }
+    @keyframes modal-in {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+      }
+    }
+  }
+  @media (max-width: 39.99rem) {
+    .modal {
+      width: 100%;
+      max-height: 100dvh;
+      height: 100dvh;
+      border-radius: 0;
+    }
+  }
+  .modal__head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: var(--space-5) var(--space-5) var(--space-3);
+    background: var(--white);
+  }
+  .modal__step {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cobalt-600);
+  }
+  .modal__title {
+    margin-block: var(--space-1);
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem);
+  }
+  .modal__close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--navy-900);
+  }
+  .modal__close:hover {
+    border-color: var(--cobalt-600);
+  }
+  .modal__progress {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    padding: 0 var(--space-5);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+  .modal__progress li {
+    padding-top: var(--space-2);
+    border-top: 3px solid var(--line);
+  }
+  .modal__progress li[aria-current='step'],
+  .modal__progress li.is-done {
+    border-color: var(--cobalt-600);
+    color: var(--navy-900);
+  }
+  .modal__demo {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    margin: var(--space-4) var(--space-5) 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--amber-50);
+    color: #4d3300;
+    font-size: var(--fs-xs);
+  }
+  .modal__demo .icon {
+    margin-top: 0.1rem;
+    color: var(--amber-800);
+  }
+  .modal__body {
+    padding: var(--space-5);
+  }
+  .modal__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    padding-top: var(--space-2);
+  }
+  .nda {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--sky-200);
+    border-radius: var(--radius);
+    background: var(--sky-50);
+  }
+  .nda h3 {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    font-size: 1.15rem;
+  }
+  .nda h3 .icon {
+    color: var(--cobalt-600);
+  }
+  .nda ul {
+    display: grid;
+    gap: var(--space-1);
+    padding-left: 1.2rem;
+  }
+  .modal__done {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .modal__done:focus-visible {
+    outline: none;
+  }
+  .modal__done[hidden] {
+    display: none;
+  }
+  .modal__done-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--green-50);
+    color: var(--green-700);
+  }
+  .modal__done h3 {
+    font-size: 1.6rem;
+  }
+  .modal__done .modal__actions {
+    justify-self: stretch;
+  }
+</style>

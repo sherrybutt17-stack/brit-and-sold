@@ -1,0 +1,17 @@
+---
+import Aurora from './Aurora.astro';
+
+interface Props {
+  variant?: 'home' | 'page' | 'compact';
+  class?: string;
+}
+
+const { variant = 'page', class: className } = Astro.props;
+---
+
+<section class:list={['page-hero', 'navy', `page-hero--${variant}`, className]} data-glow>
+  <Aurora />
+  <div class="container">
+    <slot />
+  </div>
+</section>

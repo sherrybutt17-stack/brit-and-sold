@@ -1,0 +1,215 @@
+---
+// The sale process as a scroll story: on wide screens a sticky counter and progress rail track the
+// step nearest the middle of the viewport. Without JavaScript or with reduced motion, it is a plain list.
+import { PROCESS_STEPS } from '../config/site';
+
+interface Props {
+  /** Show the longer description for each step (used on /sell). */
+  detailed?: boolean;
+}
+
+const { detailed = false } = Astro.props;
+const total = String(PROCESS_STEPS.length).padStart(2, '0');
+---
+
+<div class:list={['story', { 'story--detailed': detailed }]} data-story>
+  <div class="story__aside" aria-hidden="true">
+    <div class="story__sticky">
+      <p class="story__count">
+        <span class="story__current" data-story-current>01</span>
+        <span class="story__total">/ {total}</span>
+      </p>
+      <div class="story__rail"><span class="story__fill"></span></div>
+      <p class="story__label" data-story-label>{PROCESS_STEPS[0].title}</p>
+    </div>
+  </div>
+
+  <ol class="story__steps" role="list">
+    {
+      PROCESS_STEPS.map((step, i) => (
+        <li class="story__step" data-story-step={i}>
+          <span class="story__num" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div class="story__body">
+            <h3 class="story__title">
+              <span class="visually-hidden">Step {i + 1}: </span>
+              {step.title}
+            </h3>
+            <p class="story__summary">{step.summary}</p>
+            {detailed && <p class="story__detail">{step.detail}</p>}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .story {
+    --p: 0;
+    display: grid;
+    gap: var(--space-6);
+  }
+  .story__aside {
+    display: none;
+  }
+  .story__steps {
+    position: relative;
+    display: grid;
+  }
+  /* Rail on the left of the list (all sizes); it fills as you scroll. */
+  .story__steps::before,
+  .story__steps::after {
+    content: '';
+    position: absolute;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 2px;
+    background: var(--sky-200);
+  }
+  .story__steps::after {
+    background: linear-gradient(var(--cobalt-600), var(--cobalt-500));
+    transform-origin: top;
+    transform: scaleY(var(--p));
+  }
+  :global(html:not(.js)) .story__steps::after {
+    transform: none;
+  }
+  .story__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--space-5);
+    padding-block: var(--space-5);
+  }
+  .story__num {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1.5px solid var(--sky-200);
+    border-radius: 50%;
+    background: var(--white);
+    font-family: var(--font-display-stack);
+    font-weight: 600;
+    color: var(--cobalt-600);
+    transition:
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      color 0.4s ease,
+      transform 0.5s var(--ease-spring);
+  }
+  .story__step.is-active .story__num,
+  .story__step.is-done .story__num {
+    border-color: var(--cobalt-600);
+    background: var(--cobalt-600);
+    color: var(--white);
+  }
+  .story__step.is-active .story__num {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 6px rgb(31 79 209 / 0.14);
+  }
+  .story__body {
+    padding-top: 0.55rem;
+  }
+  .story__title {
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
+  }
+  .story__summary {
+    margin-top: var(--space-2);
+    color: var(--ink-muted);
+  }
+  .story__detail {
+    margin-top: var(--space-3);
+    max-width: 38rem;
+  }
+  /* Upcoming steps are quieter but still meet WCAG AA contrast (no opacity fades on text). */
+  :global(.js) .story__title,
+  :global(.js) .story__summary {
+    transition: color 0.5s ease;
+  }
+  :global(.js) .story__step:not(.is-active, .is-done) .story__title {
+    color: var(--ink-muted);
+  }
+  :global(.js) .story__step:not(.is-active, .is-done) .story__summary,
+  :global(.js) .story__step:not(.is-active, .is-done) .story__detail {
+    color: #66738a;
+  }
+
+  @media (min-width: 64rem) {
+    .story {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-8);
+    }
+    .story__aside {
+      display: block;
+    }
+    .story__sticky {
+      position: sticky;
+      top: calc(var(--header-h) + 3rem);
+      display: grid;
+      gap: var(--space-5);
+      padding-block: var(--space-5);
+    }
+    .story__count {
+      display: flex;
+      gap: var(--space-3);
+      align-items: baseline;
+      font-family: var(--font-display-stack);
+      line-height: 0.9;
+      color: var(--navy-900);
+    }
+    .story__current {
+      display: inline-block;
+      font-size: clamp(6rem, 3rem + 6vw, 9.5rem);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .story__current.is-changing {
+      animation: count-swap 0.6s var(--ease-out-expo);
+    }
+    .story__total {
+      font-size: 1.5rem;
+      color: var(--ink-muted);
+    }
+    .story__rail {
+      position: relative;
+      height: 2px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: var(--sky-200);
+    }
+    .story__rail .story__fill {
+      position: absolute;
+      inset: 0;
+      background: var(--cobalt-600);
+      transform-origin: left;
+      transform: scaleX(var(--p));
+    }
+    .story__label {
+      font-family: var(--font-display-stack);
+      font-size: 1.35rem;
+      color: var(--cobalt-600);
+    }
+    .story__step {
+      padding-block: var(--space-6);
+    }
+  }
+  @keyframes count-swap {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+  .story-note {
+    margin-top: var(--space-6);
+    color: var(--ink-muted);
+  }
+</style>

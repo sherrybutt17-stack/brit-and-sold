@@ -1,0 +1,370 @@
+/* Motion and atmosphere: dark heroes, the moving blue light field, glass, text reveals,
+   cursor glow, page transitions. Every animation here is opt-in via
+   `prefers-reduced-motion: no-preference`; with reduced motion the page is fully static. */
+
+/* ---------- Page transitions (cross-document View Transitions) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  .site-header {
+    view-transition-name: site-header;
+  }
+  ::view-transition-old(root) {
+    animation: vt-out 180ms ease both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 560ms var(--ease-out-expo) both;
+  }
+  ::view-transition-group(*) {
+    animation-duration: 560ms;
+    animation-timing-function: var(--ease-out-expo);
+  }
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* ---------- Dark page hero ---------- */
+.page-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: calc(var(--header-h) * -1);
+  padding-top: calc(var(--header-h) + clamp(2.5rem, 1.5rem + 4vw, 5rem));
+  padding-bottom: calc(clamp(3rem, 2rem + 4vw, 6rem) + var(--lift));
+  background: var(--navy-950);
+}
+.page-hero--home {
+  display: grid;
+  align-content: center;
+  min-height: min(100svh, 60rem);
+}
+.page-hero--compact {
+  padding-top: calc(var(--header-h) + clamp(2rem, 1.4rem + 3vw, 4rem));
+  padding-bottom: calc(clamp(2.25rem, 1.6rem + 2.5vw, 4rem) + var(--lift));
+}
+.page-hero .lead {
+  color: #cdd6e8;
+}
+.page-hero::before {
+  mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 70%);
+}
+
+/* A light section that overlaps the hero with rounded top corners. */
+.lift {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--lift) * -1);
+  border-radius: var(--lift) var(--lift) 0 0;
+}
+.lift:where(:not(.section--mist, .section--sky)) {
+  background: var(--white);
+}
+
+/* ---------- The light field ("thermal" glow) ---------- */
+.aurora {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora > span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  will-change: transform;
+}
+.aurora__blob--1 {
+  top: -36vmax;
+  right: -24vmax;
+  width: 72vmax;
+  height: 72vmax;
+  background: radial-gradient(closest-side, var(--glow-cobalt), transparent 72%);
+  opacity: 0.55;
+}
+.aurora__blob--2 {
+  bottom: -42vmax;
+  left: -22vmax;
+  width: 64vmax;
+  height: 64vmax;
+  background: radial-gradient(closest-side, var(--glow-azure), transparent 72%);
+  opacity: 0.45;
+}
+.aurora__blob--3 {
+  top: 34%;
+  left: 42%;
+  width: 34vmax;
+  height: 34vmax;
+  background: radial-gradient(closest-side, var(--glow-ice), transparent 72%);
+  opacity: 0.25;
+}
+/* Follows the pointer with a slow, heat-like lag (positions set by scripts/motion.ts). */
+.aurora__follow {
+  top: 0;
+  left: 0;
+  width: 40vmax;
+  height: 40vmax;
+  background: radial-gradient(closest-side, rgb(96 150 255 / 0.32), transparent 70%);
+  opacity: 0;
+  transform: translate3d(calc(var(--gx, 60vw) - 20vmax), calc(var(--gy, 40vh) - 20vmax), 0);
+  transition:
+    transform 1.6s var(--ease-out-expo),
+    opacity 0.8s ease;
+}
+[data-glow-active] .aurora__follow {
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .aurora__blob--1 {
+    animation: drift-a 26s ease-in-out infinite alternate;
+  }
+  .aurora__blob--2 {
+    animation: drift-b 32s ease-in-out infinite alternate;
+  }
+  .aurora__blob--3 {
+    animation: drift-c 22s ease-in-out infinite alternate;
+  }
+}
+@keyframes drift-a {
+  to {
+    transform: translate3d(-12vmax, 9vmax, 0) scale(1.15);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(14vmax, -7vmax, 0) scale(1.12);
+  }
+}
+@keyframes drift-c {
+  50% {
+    transform: translate3d(-12vmax, 7vmax, 0) scale(1.3);
+  }
+  to {
+    transform: translate3d(9vmax, -5vmax, 0) scale(0.9);
+  }
+}
+
+/* ---------- Glass panels on dark backgrounds ---------- */
+.glass {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg), rgb(7 18 38 / 0.35);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 40px 80px -40px rgb(0 0 0 / 0.75);
+}
+@media (min-width: 64rem) {
+  .glass {
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  }
+}
+
+/* ---------- Text reveal, word by word ---------- */
+.split__w {
+  display: inline-block;
+  overflow: hidden;
+  /* Padding keeps descenders and italic overhangs inside the clip box. */
+  padding: 0 0.1em 0.16em;
+  margin: 0 -0.1em -0.16em;
+  vertical-align: top;
+}
+.split__i {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .split--load .split__i {
+    animation: split-rise 1.05s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i) * 38ms + var(--split-delay, 60ms));
+  }
+  .split.reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+  .split.reveal-pending .split__i {
+    transform: translateY(112%);
+  }
+  .split.reveal-pending.is-visible .split__i {
+    transform: none;
+    transition: transform 1s var(--ease-out-expo);
+    transition-delay: calc(var(--i) * 32ms);
+  }
+
+  /* Supporting hero content fades up after the headline starts. */
+  .load-in {
+    animation: fade-up 1s var(--ease-out-expo) both;
+    animation-delay: var(--d, 0.3s);
+  }
+  /* Hero imagery settles in without ever being transparent, so it can paint immediately. */
+  .load-zoom {
+    animation: settle 1.4s var(--ease-out-expo) both;
+  }
+}
+@keyframes split-rise {
+  from {
+    transform: translateY(112%);
+  }
+}
+@keyframes settle {
+  from {
+    transform: scale(1.04);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* ---------- Cursor spotlight on cards ---------- */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--spot-size, 420px) circle at var(--mx, 50%) var(--my, 50%),
+    var(--spot-color, rgb(58 107 232 / 0.11)),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+[data-spotlight]:hover::before {
+  opacity: 1;
+}
+
+/* Buttons that lean toward the pointer (transform set by scripts/motion.ts). */
+[data-magnetic] {
+  transition:
+    transform 0.6s var(--ease-spring),
+    background-color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    box-shadow var(--dur) ease;
+}
+
+/* ---------- Scroll-linked marquee ---------- */
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  transform: translate3d(var(--marquee-x, 0px), 0, 0);
+  will-change: transform;
+}
+.marquee__set {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.25rem, 0.8rem + 2vw, 2.75rem);
+  padding-right: clamp(1.25rem, 0.8rem + 2vw, 2.75rem);
+  font-family: var(--font-display-stack);
+  font-size: clamp(1.6rem, 1.1rem + 2.4vw, 3.25rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--navy-900);
+}
+.marquee__item em {
+  color: var(--cobalt-600);
+}
+.marquee__star {
+  width: 0.45em;
+  height: 0.45em;
+  color: var(--cobalt-500);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    mask-image: none;
+  }
+  .marquee__item {
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  }
+  .marquee__track {
+    width: auto;
+    transform: none;
+  }
+  .marquee__set {
+    flex: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.5rem;
+  }
+  .marquee__set[aria-hidden] {
+    display: none;
+  }
+}
+
+/* ---------- Scroll cue ---------- */
+.scroll-cue {
+  display: inline-flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--on-dark-muted);
+}
+.scroll-cue__line {
+  position: relative;
+  width: 1px;
+  height: 2.75rem;
+  overflow: hidden;
+  background: rgb(156 195 255 / 0.2);
+}
+.scroll-cue__line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent, var(--sky-300));
+  transform: translateY(-100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-cue__line::after {
+    animation: cue 2.4s var(--ease-out-expo) infinite;
+  }
+}
+@keyframes cue {
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- Listings enter with a short stagger ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .stagger > * {
+    animation: fade-up 0.8s var(--ease-out-expo) both;
+    animation-delay: calc(min(var(--i, 0), 8) * 60ms + 0.1s);
+  }
+}
+
+/* ---------- Count-up numbers keep their width steady ---------- */
+[data-count] {
+  font-variant-numeric: tabular-nums;
+}

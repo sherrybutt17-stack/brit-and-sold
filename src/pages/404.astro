@@ -1,0 +1,42 @@
+---
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import SplitText from '../components/SplitText.astro';
+import { CTA } from '../config/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found" description="The page you were looking for could not be found.">
+  <PageHero>
+    <div class="not-found">
+      <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">404</p>
+      <SplitText as="h1" mode="load" class="not-found__title" text="We couldn’t find *that page.*" />
+      <p class="lead load-in" style="--d: 0.35s">It may have moved, or the listing may no longer be available.</p>
+      <div class="btn-row load-in" style="--d: 0.5s">
+        <a class="btn btn--on-dark btn--lg" href="/" data-magnetic>Go to the home page <Icon name="arrow-right" class="icon--nudge" /></a>
+        <a class="btn btn--ghost-dark btn--lg" href={CTA.browse.href}>{CTA.browse.label}</a>
+      </div>
+    </div>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+    max-width: 48rem;
+    padding-bottom: var(--space-7);
+  }
+  .not-found .eyebrow {
+    margin-bottom: 0;
+  }
+  .not-found :global(.not-found__title) {
+    font-size: clamp(2.6rem, 1.6rem + 4vw, 4.8rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+  }
+  .not-found :global(.not-found__title em) {
+    color: var(--sky-300);
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+// Renders an owner-supplied fact from src/config/site.ts. Renders nothing while the fact is unset.
+import { OWNER_FACTS } from '../config/site';
+
+interface Props {
+  name: keyof typeof OWNER_FACTS;
+}
+
+const value = OWNER_FACTS[Astro.props.name];
+---
+
+{value && <Fragment>{value}</Fragment>}

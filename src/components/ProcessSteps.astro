@@ -1,0 +1,178 @@
+---
+import { PROCESS_STEPS } from '../config/site';
+
+interface Props {
+  /** 'compact' = horizontal stepper preview; 'detailed' = vertical list with full descriptions. */
+  variant?: 'compact' | 'detailed';
+}
+
+const { variant = 'compact' } = Astro.props;
+---
+
+<div class:list={['process', `process--${variant}`]}>
+  <ol class="process__list" role="list" data-reveal>
+    {
+      PROCESS_STEPS.map((step, i) => (
+        <li class="process__step" style={`--i: ${i}`}>
+          <span class="process__num" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div class="process__body">
+            <h3 class="process__title">
+              <span class="visually-hidden">Step {i + 1}: </span>
+              {step.title}
+            </h3>
+            <p class="process__summary">{step.summary}</p>
+            {variant === 'detailed' && <p class="process__detail">{step.detail}</p>}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .process__list {
+    display: grid;
+    gap: var(--space-5);
+    counter-reset: step;
+  }
+  .process__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-content: start;
+    gap: var(--space-4);
+  }
+  .process__num {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1.5px solid var(--cobalt-600);
+    border-radius: 50%;
+    background: var(--white);
+    font-family: var(--font-display-stack);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--cobalt-600);
+  }
+  .process__title {
+    font-size: 1.2rem;
+  }
+  .process__summary {
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--ink-muted);
+  }
+  .process__detail {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+  }
+  .process__note {
+    margin-top: var(--space-6);
+    color: var(--ink-muted);
+  }
+
+  /* Vertical connector between numbers (all layouts below desktop, and the detailed variant). */
+  .process__step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: 3rem;
+    bottom: calc(var(--space-5) * -1);
+    left: 1.5rem;
+    width: 1.5px;
+    background: var(--sky-200);
+  }
+
+  .process--detailed .process__list {
+    gap: var(--space-6);
+  }
+  .process--detailed .process__step:not(:last-child)::before {
+    bottom: calc(var(--space-6) * -1);
+  }
+  .process--detailed .process__body {
+    padding-bottom: var(--space-2);
+  }
+  @media (min-width: 48rem) {
+    .process--detailed .process__step {
+      grid-template-columns: auto minmax(0, 16rem) minmax(0, 1fr);
+      column-gap: var(--space-6);
+      row-gap: var(--space-2);
+    }
+    .process--detailed .process__num {
+      grid-row: 1 / span 2;
+    }
+    .process--detailed .process__title {
+      padding-top: 0.6rem;
+    }
+    .process--detailed .process__body {
+      display: contents;
+    }
+    .process--detailed .process__title,
+    .process--detailed .process__summary {
+      grid-column: 2;
+    }
+    .process--detailed .process__summary {
+      align-self: start;
+    }
+    .process--detailed .process__summary {
+      margin-top: 0;
+    }
+    .process--detailed .process__detail {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+      margin-top: 0;
+      padding-top: 0.6rem;
+      color: var(--ink);
+    }
+  }
+
+  /* Compact preview on desktop: a horizontal stepper whose rule draws in on reveal. */
+  @media (min-width: 64rem) {
+    .process--compact .process__list {
+      position: relative;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+    .process--compact .process__list::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--cobalt-600), var(--sky-200));
+      transform-origin: left;
+    }
+    .process--compact .process__step {
+      grid-template-columns: 1fr;
+    }
+    .process--compact .process__step::before {
+      display: none;
+    }
+  }
+  @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+    .process--compact .reveal-pending::before {
+      transform: scaleX(0);
+      transition: transform 1.1s var(--ease-out) 0.15s;
+    }
+    .process--compact .reveal-pending.is-visible::before {
+      transform: scaleX(1);
+    }
+    .process--compact .reveal-pending .process__step {
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 0.6s var(--ease-out),
+        transform 0.6s var(--ease-out);
+      transition-delay: calc(var(--i) * 120ms + 0.1s);
+    }
+    .process--compact .reveal-pending.is-visible .process__step {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

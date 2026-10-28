@@ -1,0 +1,65 @@
+---
+import Aurora from './Aurora.astro';
+import Icon from './Icon.astro';
+import SplitText from './SplitText.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  primary: { href: string; label: string };
+  secondary?: { href: string; label: string };
+}
+const { eyebrow, title, primary, secondary } = Astro.props;
+---
+
+<section class="cta-band navy section" aria-labelledby="cta-band-title" data-glow>
+  <Aurora />
+  <div class="container cta-band__inner">
+    <div>
+      {eyebrow && <p class="eyebrow eyebrow--pill">{eyebrow}</p>}
+      <SplitText id="cta-band-title" class="cta-band__title" text={title} />
+    </div>
+    <div class="cta-band__body" data-reveal style="--reveal-delay: 2">
+      <div class="lead"><slot /></div>
+      <div class="btn-row">
+        <a class="btn btn--on-dark btn--lg" href={primary.href} data-magnetic>
+          {primary.label}
+          <Icon name="arrow-right" class="icon--nudge" />
+        </a>
+        {secondary && <a class="btn btn--ghost-dark btn--lg" href={secondary.href}>{secondary.label}</a>}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band__inner {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 60rem) {
+    .cta-band__inner {
+      grid-template-columns: 1.15fr 1fr;
+      align-items: end;
+      gap: var(--space-8);
+    }
+  }
+  .cta-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--navy-950);
+  }
+  .cta-band :global(.cta-band__title) {
+    font-size: var(--fs-h1);
+    max-width: 16ch;
+  }
+  .cta-band__body {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .cta-band__body .lead {
+    display: grid;
+    gap: var(--space-3);
+  }
+</style>

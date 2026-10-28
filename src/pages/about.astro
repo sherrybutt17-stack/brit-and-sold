@@ -1,0 +1,459 @@
+---
+import { Picture } from 'astro:assets';
+import robSeated from '../assets/rob/rob-about-3.png';
+import Aurora from '../components/Aurora.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Fact from '../components/Fact.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import SplitText from '../components/SplitText.astro';
+import { CTA, OWNER_FACTS, ROB_LINKS } from '../config/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { IconName } from '../lib/icons';
+
+const values: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'eye-off',
+    title: 'Discretion first',
+    text: 'Your name stays out of marketing materials, and buyers sign an NDA before they learn which business it is.',
+  },
+  {
+    icon: 'scale',
+    title: 'Straight answers',
+    text: 'If the timing or the numbers aren’t there yet, you hear it early, along with what would change it.',
+  },
+  {
+    icon: 'compass',
+    title: 'Preparation over pressure',
+    text: 'A well-prepared business gives you more choices. Nobody should be rushed into a decision this big.',
+  },
+  {
+    icon: 'handshake',
+    title: 'Fit, not just price',
+    text: 'The right buyer can fund the deal, close it, and look after what you built.',
+  },
+];
+---
+
+<BaseLayout
+  title="About Rob Dawson"
+  description="Meet Rob Dawson, entrepreneur, CEO and business coach, and learn how Brit and Sold works with business owners and buyers."
+  stickyCta={CTA.sell}
+>
+  <PageHero>
+    <div class="about-hero__inner">
+      <div class="about-hero__copy">
+        <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">About Rob</p>
+        <SplitText as="h1" mode="load" class="about-hero__title" text="Meet *Rob Dawson*" />
+        <p class="lead load-in" style="--d: 0.4s">
+          Entrepreneur, CEO and business coach, and the “with Rob Dawson” in Brit and Sold. When you reach out, this is
+          who you’re talking to.
+        </p>
+        <div class="btn-row load-in" style="--d: 0.55s">
+          <a class="btn btn--on-dark btn--lg" href={CTA.sell.href} data-magnetic>
+            {CTA.sell.label}
+            <Icon name="arrow-right" class="icon--nudge" />
+          </a>
+          <a class="btn btn--ghost-dark btn--lg" href={CTA.browse.href}>{CTA.browse.label}</a>
+        </div>
+      </div>
+      <figure class="about-hero__media load-zoom">
+        <Picture
+          src={robSeated}
+          formats={['avif']}
+          fallbackFormat="webp"
+          widths={[360, 560, 800, 1135]}
+          sizes="(min-width: 64rem) 520px, 90vw"
+          alt="Rob Dawson in a gray blazer and white shirt, seated on a wooden bench outdoors, hands clasped."
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+    </div>
+  </PageHero>
+
+  <section class="section lift" aria-labelledby="story-title">
+    <div class="container bio">
+      <div class="bio__copy">
+        <p class="eyebrow" data-reveal><span class="eyebrow__num">01</span>Rob’s story</p>
+        <SplitText id="story-title" text="Built from *the ground up*" />
+        <p>
+          Rob’s route into business wasn’t a conventional one. He left high school without graduating, went back
+          through night school, and built from there to become the CEO of his own company.
+        </p>
+        <p>
+          Along the way he has spent more than 12 years in digital-marketing consulting and works as a business coach,
+          helping owners think clearly about growth, sales and what they want their business to do for them. He also
+          hosts the <em>Faith on Fire</em> podcast.
+        </p>
+        <p class="muted small">
+          Biography adapted from <a href={ROB_LINKS.website} rel="noopener">robdawson.tv</a>.
+        </p>
+      </div>
+      <dl class="facts" data-reveal style="--reveal-delay: 1">
+        <div>
+          <dt>Background</dt>
+          <dd>Entrepreneur, CEO and business coach</dd>
+        </div>
+        <div>
+          <dt>Experience</dt>
+          <dd>12+ years in digital-marketing consulting</dd>
+        </div>
+        {
+          OWNER_FACTS.licensing && (
+            <div>
+              <dt>Licensing and memberships</dt>
+              <dd>
+                <Fact name="licensing" />
+              </dd>
+            </div>
+          )
+        }
+        {
+          OWNER_FACTS.focus && (
+            <div>
+              <dt>Industries and deal sizes</dt>
+              <dd>
+                <Fact name="focus" />
+              </dd>
+            </div>
+          )
+        }
+        {
+          OWNER_FACTS.serviceArea && (
+            <div>
+              <dt>Service area</dt>
+              <dd>
+                <Fact name="serviceArea" />
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="section navy why" aria-labelledby="why-title" data-glow>
+    <Aurora />
+    <div class="container why__inner">
+      <p class="eyebrow eyebrow--pill" data-reveal>Why Brit and Sold</p>
+      <SplitText id="why-title" class="why__title" text="Selling a business is personal. *The process should respect that.*" />
+      {
+        OWNER_FACTS.origin && (
+          <p class="why__statement" data-reveal style="--reveal-delay: 2">
+            <Fact name="origin" />
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal><span class="eyebrow__num">03</span>How we work</p>
+        <SplitText id="values-title" text="What you can *expect*" />
+      </div>
+      <ul role="list" class="values">
+        {
+          values.map((v, i) => (
+            <li data-reveal data-spotlight style={`--reveal-delay: ${i}`}>
+              <span class="values__icon">
+                <Icon name={v.icon} />
+              </span>
+              <h3>{v.title}</h3>
+              <p class="small muted">{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="relationship">
+        <article class="relationship__col" data-reveal>
+          <h3><Icon name="building-2" /> Working together as a seller</h3>
+          <ul role="list">
+            <li>One point of contact from first conversation to closing.</li>
+            <li>Regular updates on buyer interest and next steps.</li>
+            <li>You decide which buyers go further and which offers to pursue.</li>
+            <li>Your attorney and accountant stay involved where it matters.</li>
+          </ul>
+        </article>
+        <article class="relationship__col" data-reveal style="--reveal-delay: 1">
+          <h3><Icon name="search" /> Working together as a buyer</h3>
+          <ul role="list">
+            <li>Clear public listings that show what each seller has approved.</li>
+            <li>A short qualification step, then an NDA, before full details.</li>
+            <li>Be ready to share proof of funds and relevant experience.</li>
+            <li>Honest status updates, including when a business is under offer.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="proof-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal><span class="eyebrow__num">04</span>The process</p>
+          <SplitText id="proof-title" text="How a sale runs, *step by step*" />
+        </div>
+        <p class="muted" data-reveal style="--reveal-delay: 2">
+          Every sale is different, but the shape is predictable. Here is what to expect from the first call to closing.
+        </p>
+      </div>
+      <ProcessSteps />
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Next step"
+    title="Ready to talk, or just starting to think about it?"
+    primary={CTA.sell}
+    secondary={CTA.browse}
+  >
+    <p>
+      Owners can start with a private conversation, with no documents and no commitment. Buyers can browse the
+      directory and request details on any listing.
+    </p>
+  </CtaBand>
+</BaseLayout>
+
+<style>
+  .about-hero__inner {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .about-hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+  .about-hero__copy {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+  }
+  .about-hero__copy .eyebrow {
+    margin-bottom: 0;
+  }
+  .about-hero__copy :global(.about-hero__title) {
+    font-size: clamp(2.8rem, 1.5rem + 5vw, 5.6rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .about-hero__copy :global(.about-hero__title em) {
+    color: var(--sky-300);
+  }
+  .about-hero__media {
+    position: relative;
+    max-width: 32.5rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .about-hero__media::before {
+    content: '';
+    position: absolute;
+    inset: 1.25rem -1.25rem -1.25rem 1.25rem;
+    z-index: -1;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    background:
+      radial-gradient(90% 80% at 0% 100%, rgb(58 139 255 / 0.45), transparent 65%),
+      linear-gradient(rgb(156 195 255 / 0.12) 1px, transparent 1px) -1px -1px / 28px 28px,
+      linear-gradient(90deg, rgb(156 195 255 / 0.12) 1px, transparent 1px) -1px -1px / 28px 28px,
+      rgb(255 255 255 / 0.03);
+  }
+  .about-hero__media {
+    isolation: isolate;
+  }
+  .about-hero__media :global(img) {
+    width: 100%;
+    aspect-ratio: 1135 / 1122;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
+    box-shadow: 0 50px 90px -40px rgb(0 0 0 / 0.8);
+  }
+  @media (max-width: 40rem) {
+    .about-hero__media::before {
+      inset: 0.75rem -0.5rem -0.75rem 0.75rem;
+    }
+  }
+
+  .bio {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64rem) {
+    .bio {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .bio__copy {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 40rem;
+  }
+  .bio__copy .eyebrow {
+    margin-bottom: 0;
+  }
+  .bio__copy p:not(.eyebrow, .muted) {
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+  }
+  .facts {
+    border-top: 2px solid var(--navy-900);
+  }
+  .facts div {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .facts dt {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .facts dd {
+    font-family: var(--font-display-stack);
+    font-size: 1.2rem;
+    color: var(--navy-900);
+  }
+
+  .why {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--navy-950);
+  }
+  .why__inner {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+  }
+  .why__inner > :global(*) {
+    max-width: 60rem;
+  }
+  .why__inner :global(.why__title) {
+    font-size: var(--fs-h1);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+  .why__inner :global(.why__title em) {
+    color: var(--sky-300);
+  }
+  .why__inner .eyebrow {
+    margin-bottom: 0;
+  }
+  .why__statement {
+    max-width: 44rem;
+    margin-top: var(--space-2);
+    padding-left: var(--space-5);
+    border-left: 3px solid var(--sky-300);
+    font-size: var(--fs-lead);
+    color: var(--on-dark);
+  }
+  .why__quote {
+    margin-top: var(--space-4);
+    padding-left: var(--space-5);
+    border-left: 3px solid var(--sky-300);
+  }
+  .why__quote p {
+    font-family: var(--font-display-stack);
+    font-size: var(--fs-h3);
+    color: var(--white);
+  }
+  .why__quote footer {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    color: var(--on-dark-muted);
+  }
+  .why__quote footer::before {
+    content: '— ';
+  }
+
+  .values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--space-5);
+  }
+  .bio__copy :global(h2 em),
+  .section-head :global(h2 em) {
+    color: var(--cobalt-600);
+  }
+  .values li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+  }
+  .values h3 {
+    font-size: 1.25rem;
+  }
+  .values__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: var(--space-2);
+    border-radius: 50%;
+    background: var(--sky-100);
+    color: var(--cobalt-600);
+  }
+
+  .relationship {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  @media (min-width: 48rem) {
+    .relationship {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .relationship__col {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: var(--sky-50);
+    border: 1px solid var(--sky-200);
+  }
+  .relationship__col h3 {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+  .relationship__col h3 .icon {
+    color: var(--cobalt-600);
+  }
+  .relationship__col ul {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .relationship__col li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .relationship__col li::before {
+    content: '';
+    position: absolute;
+    top: 0.6em;
+    left: 0;
+    width: 0.6rem;
+    height: 1.5px;
+    background: var(--cobalt-600);
+  }
+</style>

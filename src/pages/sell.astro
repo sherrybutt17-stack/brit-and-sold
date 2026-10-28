@@ -1,0 +1,512 @@
+---
+import Fact from '../components/Fact.astro';
+import { OWNER_FACTS } from '../config/site';
+import FaqItem from '../components/FaqItem.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import ProcessStory from '../components/ProcessStory.astro';
+import SplitText from '../components/SplitText.astro';
+import SellerForm from '../components/SellerForm.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { IconName } from '../lib/icons';
+
+const discretion: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'building-2',
+    title: 'Share your company name later',
+    text: 'The inquiry form works without it. Many owners prefer to talk first.',
+  },
+  {
+    icon: 'file-text',
+    title: 'Keep documents out of the form',
+    text: 'Financial statements are requested later, through a secure channel, only if it makes sense to continue.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'Screened buyers, NDA first',
+    text: 'Buyers are vetted and sign a non-disclosure agreement before they learn which business it is.',
+  },
+];
+
+const readiness = [
+  { title: 'Three years of clean financials', text: 'Profit and loss statements, balance sheets and tax returns that reconcile with each other.' },
+  { title: 'Your role, written down', text: 'What depends on you today, and who could run the day-to-day without you.' },
+  { title: 'Customer concentration', text: 'How much revenue comes from your largest customers, and how secure those relationships are.' },
+  { title: 'Recurring revenue and contracts', text: 'Which income repeats, and whether key contracts can transfer to a new owner.' },
+  { title: 'Key people', text: 'Who is essential, how long they have been with you, and whether they are likely to stay.' },
+  { title: 'Your lease', text: 'Remaining term, renewal options and whether the landlord will assign it to a buyer.' },
+  { title: 'Add-backs, with evidence', text: 'Personal or one-time expenses run through the business, and records that support them.' },
+  { title: 'Systems and processes', text: 'How work gets done, documented well enough that someone new could follow it.' },
+  { title: 'Licenses and loose ends', text: 'Permits, registrations and any disputes or liabilities a buyer would want to understand.' },
+  { title: 'A credible growth story', text: 'Opportunities a new owner could realistically pursue, and why you haven’t yet.' },
+];
+---
+
+<BaseLayout
+  title="Sell Your Business"
+  description="Thinking about selling your business? Start a confidential inquiry with Brit and Sold with Rob Dawson. Learn how the process works and what buyers will ask about."
+  stickyCta={{ href: '#inquiry', label: 'Start your inquiry' }}
+>
+  <PageHero>
+    <div class="sell-hero__inner">
+      <div class="sell-hero__copy">
+        <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">Sell your business</p>
+        <SplitText
+          as="h1"
+          mode="load"
+          class="sell-hero__title"
+          text="Selling your business starts with *one discreet conversation.*"
+        />
+        <p class="lead load-in" style="--d: 0.45s">
+          Tell Rob a little about your business and what you want next. You’ll get a straight answer about whether, and
+          how, a sale could work, without committing to anything.
+        </p>
+        <div class="btn-row load-in" style="--d: 0.6s">
+          <a class="btn btn--on-dark btn--lg" href="#inquiry" data-magnetic>
+            Start your inquiry
+            <Icon name="arrow-right" class="icon--nudge" />
+          </a>
+          <a class="btn btn--ghost-dark btn--lg" href="#process">See how it works</a>
+        </div>
+      </div>
+
+      <aside class="after glass load-in" style="--d: 0.65s" aria-labelledby="after-title" data-spotlight>
+        <h2 id="after-title" class="after__title">What happens after you submit</h2>
+        <ol role="list" class="after__list">
+          <li>
+            <span class="after__num">1</span>
+            <div>
+              <h3>Rob reviews your inquiry</h3>
+              <p class="small muted">He looks at what you’ve shared so the first call is useful, not generic.</p>
+            </div>
+          </li>
+          <li>
+            <span class="after__num">2</span>
+            <div>
+              <h3>You hear back</h3>
+              <p class="small muted">
+                By your preferred contact method{OWNER_FACTS.responseTime && <Fragment>, <Fact name="responseTime" /></Fragment>}.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="after__num">3</span>
+            <div>
+              <h3>A private first conversation</h3>
+              <p class="small muted">Your goals, your timing and your options. No obligation to list or sell.</p>
+            </div>
+          </li>
+        </ol>
+      </aside>
+    </div>
+  </PageHero>
+
+  <section class="section section--tight section--mist lift" aria-labelledby="discretion-title">
+    <div class="container discretion">
+      <div class="discretion__head">
+        <SplitText id="discretion-title" text="Discretion is built in from *the first step.*" />
+        <p class="muted" data-reveal>
+          No process can promise that nobody will ever find out. A careful one keeps the risk low, so employees,
+          customers and competitors don’t hear about a sale before you’re ready.
+        </p>
+      </div>
+      <ul role="list" class="discretion__list">
+        {
+          discretion.map((item, i) => (
+            <li data-reveal data-spotlight style={`--reveal-delay: ${i}`}>
+              <span class="discretion__icon">
+                <Icon name={item.icon} />
+              </span>
+              <h3>{item.title}</h3>
+              <p class="small muted">{item.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="process" aria-labelledby="sell-process-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal><span class="eyebrow__num">01</span>The process</p>
+          <SplitText id="sell-process-title" text="What selling with a broker *looks like*" />
+        </div>
+        {
+          OWNER_FACTS.timeline || OWNER_FACTS.fees || OWNER_FACTS.focus ? (
+            <div class="process-facts" data-reveal style="--reveal-delay: 2">
+              {OWNER_FACTS.timeline && <p class="small"><strong>Typical timeline:</strong> <Fact name="timeline" /></p>}
+              {OWNER_FACTS.fees && <p class="small"><strong>Fees:</strong> <Fact name="fees" /></p>}
+              {OWNER_FACTS.focus && <p class="small"><strong>Who Rob works with:</strong> <Fact name="focus" /></p>}
+            </div>
+          ) : (
+            <p class="lead" data-reveal style="--reveal-delay: 2">
+              Every sale is different, but most follow the same shape. Here is what to expect, step by step.
+            </p>
+          )
+        }
+      </div>
+      <ProcessStory detailed />
+    </div>
+  </section>
+
+  <section class="section section--sky inquiry" id="inquiry" aria-label="Seller inquiry" data-hide-sticky>
+    <div class="container inquiry__inner">
+      <div class="inquiry__intro">
+        <p class="eyebrow"><span class="eyebrow__num">02</span>Start here</p>
+        <SplitText class="inquiry__title" text="Tell us about *your business*" />
+        <p class="lead">
+          A few basics are enough for a useful first conversation. Ranges are fine, and you can leave your company name
+          out entirely.
+        </p>
+        <ul role="list" class="inquiry__points">
+          <li><Icon name="check" />No documents, no commitment</li>
+          <li><Icon name="check" />Not ready yet? That’s an option in the form</li>
+          <li><Icon name="check" />Your details aren’t shared with buyers</li>
+        </ul>
+        {
+          (OWNER_FACTS.phone || OWNER_FACTS.bookingUrl) && (
+            <div class="inquiry__alt">
+              <p class="small"><strong>Prefer to talk first?</strong></p>
+              {OWNER_FACTS.phone && (
+                <p class="small muted">
+                  Call <a href={`tel:${OWNER_FACTS.phone.replace(/[^0-9+]/g, '')}`}>{OWNER_FACTS.phone}</a>
+                </p>
+              )}
+              {OWNER_FACTS.bookingUrl && (
+                <p class="small muted">
+                  <a href={OWNER_FACTS.bookingUrl}>Book a call</a>
+                </p>
+              )}
+            </div>
+          )
+        }
+      </div>
+      <SellerForm />
+    </div>
+  </section>
+
+  <section class="section" id="readiness" aria-labelledby="readiness-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal><span class="eyebrow__num">03</span>Not ready yet?</p>
+          <SplitText id="readiness-title" text="What buyers will *ask about*" />
+        </div>
+        <p class="lead" data-reveal style="--reveal-delay: 2">
+          If a sale is a year or more away, this is where to start. Each item takes time to get right, and each one
+          shapes how buyers see the business.
+        </p>
+      </div>
+      <ol role="list" class="readiness">
+        {
+          readiness.map((item, i) => (
+            <li data-reveal style={`--reveal-delay: ${i % 2}`}>
+              <span class="readiness__num">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p class="small muted">{item.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="readiness__cta">
+        <a class="text-link" href="#inquiry">Talk through your list with Rob <Icon name="arrow-right" /></a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--mist" id="faq" aria-labelledby="faq-title">
+    <div class="container faq-layout">
+      <div class="faq-layout__head">
+        <p class="eyebrow"><span class="eyebrow__num">04</span>Questions</p>
+        <SplitText id="faq-title" text="Questions *owners* ask" />
+        <p class="muted">Straight answers, including where the honest answer is “it depends”.</p>
+      </div>
+      <div>
+        <FaqItem question="Will my employees, customers or competitors find out?">
+          <p>
+            Businesses are usually marketed without their name, and buyers are screened and asked to sign a
+            non-disclosure agreement before learning more. That keeps the risk low, but no process can rule it out
+            entirely, so part of the first conversation is deciding who needs to know what, and when.
+          </p>
+        </FaqItem>
+        <FaqItem question="What is my business worth?">
+          <p>
+            It depends on earnings, how predictable they are, how much the business relies on you, and what buyers in
+            your industry pay attention to. A responsible answer needs a proper look at the numbers, so the first
+            conversation focuses on what drives value rather than guessing at a figure.
+          </p>
+        </FaqItem>
+        <FaqItem question="How long does it take to sell a business?">
+          <p>
+            It varies with size, industry, preparation and how the buyer is financing the purchase. Rob will give you a
+            realistic view for your situation.{OWNER_FACTS.timeline && <Fragment> Typical timeline: <Fact name="timeline" /></Fragment>}
+          </p>
+        </FaqItem>
+        <FaqItem question="Do I need everything ready before I get in touch?">
+          <p>
+            No. A first conversation needs nothing more than what’s in the form. If you decide to go ahead, preparing
+            the right information becomes part of the process.
+          </p>
+        </FaqItem>
+        {
+          OWNER_FACTS.fees && (
+            <FaqItem question="What does it cost?">
+              <p>
+                <Fact name="fees" />
+              </p>
+            </FaqItem>
+          )
+        }
+        {
+          (OWNER_FACTS.focus || OWNER_FACTS.serviceArea) && (
+            <FaqItem question="Which businesses and areas does Rob work with?">
+              {OWNER_FACTS.focus && <p>Industries and deal sizes: <Fact name="focus" /></p>}
+              {OWNER_FACTS.serviceArea && <p>Service area: <Fact name="serviceArea" /></p>}
+            </FaqItem>
+          )
+        }
+        <FaqItem question="I’m not ready to sell. Is it too early to talk?">
+          <p>
+            Not at all. Buyers look closely at the last few years of results, so the earlier you understand what they
+            value, the more time you have to strengthen it. “Not ready yet” is one of the options in the form.
+          </p>
+        </FaqItem>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sell-hero__inner {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64rem) {
+    .sell-hero__inner {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.85fr);
+      align-items: center;
+      gap: var(--space-8);
+    }
+  }
+  .sell-hero__copy {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+  }
+  .sell-hero__copy .eyebrow {
+    margin-bottom: 0;
+  }
+  .sell-hero__copy :global(.sell-hero__title) {
+    font-size: clamp(2.5rem, 1.5rem + 4vw, 4.6rem);
+    font-weight: 400;
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+  }
+  .sell-hero__copy :global(.sell-hero__title em) {
+    color: var(--sky-300);
+  }
+
+  .after {
+    --spot-color: rgb(140 190 255 / 0.12);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  }
+  .after h3 {
+    color: var(--white);
+  }
+  .after .muted {
+    color: var(--on-dark-muted);
+  }
+  .after__title {
+    margin-bottom: var(--space-5);
+    font-size: 1.5rem;
+  }
+  .after__list {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .after__list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-4);
+  }
+  .after__list h3 {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-1);
+  }
+  .after__num {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--cobalt-500), var(--cobalt-600));
+    box-shadow: 0 0 0 5px rgb(58 107 232 / 0.18);
+    color: var(--white);
+    font-family: var(--font-display-stack);
+    font-weight: 600;
+  }
+
+  .discretion {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 64rem) {
+    .discretion {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 2fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .discretion__head {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .discretion__head :global(h2) {
+    font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.4rem);
+  }
+  .discretion__head :global(h2 em),
+  .section-head :global(h2 em),
+  .inquiry__intro :global(h2 em),
+  .faq-layout__head :global(h2 em) {
+    color: var(--cobalt-600);
+  }
+  .discretion__list {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 40rem) {
+    .discretion__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .discretion__list li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+  }
+  .discretion__list h3 {
+    font-size: 1.2rem;
+  }
+  .discretion__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: var(--space-2);
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--sky-200);
+    color: var(--cobalt-600);
+  }
+
+  .process-facts {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    border-left: 3px solid var(--cobalt-600);
+    background: var(--sky-50);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  .inquiry__inner {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64rem) {
+    .inquiry__inner {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .inquiry__intro {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .inquiry__intro {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .inquiry__intro .eyebrow {
+    margin-bottom: 0;
+  }
+  .inquiry__points {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .inquiry__points li {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .inquiry__points .icon {
+    color: var(--green-700);
+  }
+  .inquiry__alt {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--sky-200);
+  }
+
+  .readiness {
+    display: grid;
+    gap: 0 var(--space-7);
+  }
+  @media (min-width: 48rem) {
+    .readiness {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .readiness li {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: var(--space-3);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+  .readiness h3 {
+    font-size: 1.2rem;
+    margin-bottom: var(--space-1);
+  }
+  .readiness__num {
+    font-family: var(--font-display-stack);
+    font-size: 1.15rem;
+    color: var(--cobalt-600);
+  }
+  .readiness__cta {
+    margin-top: var(--space-5);
+  }
+
+  .faq-layout {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 64rem) {
+    .faq-layout {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .faq-layout__head {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .faq-layout__head {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .faq-layout__head .eyebrow {
+    margin-bottom: 0;
+  }
+</style>
