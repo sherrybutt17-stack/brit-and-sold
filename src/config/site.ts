@@ -4,8 +4,8 @@
 import { url } from '../lib/url';
 
 export const BRAND = {
-  name: 'Brit and Sold with Rob Dawson',
-  short: 'Brit and Sold',
+  name: 'Build and Sold with Rob Dawson',
+  short: 'Build and Sold',
   person: 'Rob Dawson',
 } as const;
 
@@ -41,7 +41,7 @@ export const OWNER_FACTS: Record<
   | 'privacyPolicyUrl',
   OwnerFact
 > = {
-  email: 'hello@britandsold.example', // .example is a reserved, non-routable domain
+  email: 'hello@buildandsold.example', // .example is a reserved, non-routable domain
   phone: '(555) 010-0142', // 555-01xx numbers are reserved for fictional use
   bookingUrl: null,
   serviceArea: 'Business owners across the United States',
@@ -51,7 +51,7 @@ export const OWNER_FACTS: Record<
   fees: 'Typically a success fee paid at closing, agreed in writing before your business is marketed.',
   timeline: 'Usually six to twelve months from first conversation to closing',
   origin:
-    'Brit and Sold exists for owners who want an honest read on their options and a discreet, well-run process, whether they sell next quarter or in five years.',
+    'Build and Sold exists for owners who want an honest read on their options and a discreet, well-run process, whether they sell next quarter or in five years.',
   privacyPolicyUrl: null,
 };
 

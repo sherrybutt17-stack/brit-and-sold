@@ -1,6 +1,6 @@
-# Brit and Sold with Rob Dawson — project notes
+# Build and Sold with Rob Dawson — project notes
 
-Four-page business brokerage website mockup. Public brand name is exactly **Brit and Sold with Rob Dawson**.
+Four-page business brokerage website mockup. Public brand name is exactly **Build and Sold with Rob Dawson**.
 
 ## Decisions (from the owner, 2026-10-28)
 - **Market: US / USD.** US states and cities, `$` ranges, US spelling.
@@ -84,7 +84,7 @@ tests/site.spec.ts, tests/screens.spec.ts
   - Every text and background pair will be checked to meet WCAG AA during implementation.
 - **Typography:** large editorial serif headlines in Newsreader and a clean sans for body text in Instrument Sans. Numbered section labels (01, 02, …) and thin ledger rules give an editorial feel.
 - **Signature motif:** a faint blueprint grid in navy sections ("the business you built"). There is no stock-photo hero; the right-hand side of the hero is a card titled "What your first conversation covers".
-- **Wordmark:** "Brit and Sold" in serif with "with Rob Dawson" set small beneath it. Rob's old podcast logo is not used.
+- **Wordmark:** "Build and Sold" in serif with "with Rob Dawson" set small beneath it. Rob's old podcast logo is not used.
 
 ### Pages
 
@@ -157,7 +157,7 @@ tests/site.spec.ts, tests/screens.spec.ts
 
 #### About Rob (`/about`)
 - Portrait plus a bio built only from robdawson.tv facts: entrepreneur, CEO of his own company, business coach, 12+ years in digital-marketing consulting, his personal story in brief, and the podcast mentioned once. Every fact is flagged in the README for Rob to approve.
-- **"Why Brit and Sold"** origin, credentials or licensing, industries, and service area: all shown as `<Placeholder>` chips.
+- **"Why Build and Sold"** origin, credentials or licensing, industries, and service area: all shown as `<Placeholder>` chips.
 - **How we work:** values (discretion, straight answers, preparation, buyer fit) and what the working relationship looks like, in separate columns for sellers and buyers.
 - **No testimonials.** The process section stands in for social proof.
 - Separate CTAs: Talk About Selling and Browse Businesses.
@@ -209,4 +209,4 @@ interface Listing {
 - Statement that the listings and both forms are **demo-only** with no backend, and where to plug one in (`submitInquiry()` in `seller-form.ts` and in `request-dialog.ts`).
 - Statement that the voice note was **removed at the user's request**.
 - The measured performance results.
-- **Facts the owner still needs to provide:** contact details and booking link, service area, licensing or registration, fees, industry and deal-size focus, real process and timelines, response-time commitment, NDA and privacy policy, real listings with per-field approval, transaction track record, the Brit and Sold origin story (and whether "Brit" refers to a UK tie), approval of the bio and photos, and a logo.
+- **Facts the owner still needs to provide:** contact details and booking link, service area, licensing or registration, fees, industry and deal-size focus, real process and timelines, response-time commitment, NDA and privacy policy, real listings with per-field approval, transaction track record, the Build and Sold origin story, approval of the bio and photos, and a logo.

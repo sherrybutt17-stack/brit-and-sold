@@ -6,7 +6,7 @@ const fontFiles = './node_modules/@fontsource-variable';
 // GitHub Pages serves the site from /<repo>/; the deploy workflow sets BASE_PATH and SITE_URL.
 // Locally both are unset, so the site runs at the root.
 export default defineConfig({
-  site: process.env.SITE_URL ?? 'https://britandsold.example',
+  site: process.env.SITE_URL ?? 'https://buildandsold.example',
   base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
   build: {
