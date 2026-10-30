@@ -77,14 +77,15 @@ const hasDirectContact = Boolean(OWNER_FACTS.email || OWNER_FACTS.phone);
       {
         IS_DEMO && (
           <p class="site-footer__demo">
-            <strong>Demo build.</strong> Every business listed on this site is a fictional sample, contact details and
-            terms are placeholders, and the forms do not send or store anything.
+            <strong>Demo build.</strong> Every business listed on this site is a fictional sample. Contact details, fees
+            and terms are sample values, and the forms do not send or store anything.
           </p>
         )
       }
       <p>
-        Nothing on this site guarantees a sale, price, buyer, timeline, tax or financing outcome. Listing information
-        is provided by sellers and should be independently verified.
+        Nothing on this site guarantees a sale, price, buyer, timeline, tax or financing outcome.{
+          !IS_DEMO && ' Listing information is provided by sellers and should be independently verified.'
+        }
       </p>
       <p>
         © {year} {BRAND.name}

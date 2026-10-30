@@ -142,7 +142,8 @@ const { variant = 'compact' } = Astro.props;
       position: absolute;
       top: 1.5rem;
       left: 1.5rem;
-      right: 1.5rem;
+      /* End at the centre of the last number: one column width in from the right, less its radius. */
+      right: calc((100% - 4 * var(--space-5)) / 5 - 1.5rem);
       height: 1.5px;
       background: linear-gradient(90deg, var(--cobalt-600), var(--sky-200));
       transform-origin: left;

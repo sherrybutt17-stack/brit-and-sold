@@ -2,7 +2,7 @@
 // Listing cards are rendered on the server; this script only shows, hides and reorders them using
 // the public data-* attributes on each <li data-listing>. Filter state is mirrored in the URL.
 
-import { PRICE_BUCKETS, PRICE_UNDISCLOSED, REVENUE_BUCKETS, SIZE_BUCKETS, inBucket } from '../data/filters';
+import { PRICE_BUCKETS, PRICE_UNDISCLOSED, REVENUE_BUCKETS, SIZE_BUCKETS, inBucket, rangeInBucket } from '../data/filters';
 
 const FILTER_KEYS = ['q', 'industry', 'state', 'revenue', 'price', 'size', 'status'] as const;
 type FilterKey = (typeof FILTER_KEYS)[number];
@@ -12,10 +12,10 @@ const DEFAULT_SORT = 'newest';
 const FILTER_LABELS: Record<FilterKey, string> = {
   q: 'Search',
   industry: 'Industry',
-  state: 'State',
-  revenue: 'Revenue',
+  state: 'Location',
+  revenue: 'Annual revenue',
   price: 'Asking price',
-  size: 'Size',
+  size: 'Company size',
   status: 'Status',
 };
 
@@ -97,7 +97,7 @@ function initDirectory(form: HTMLFormElement, grid: HTMLElement) {
     }
     if (state.size) {
       const bucket = SIZE_BUCKETS.find((b) => b.id === state.size);
-      if (bucket && !inBucket(Number(d.size), bucket)) return false;
+      if (bucket && !rangeInBucket(Number(d.sizeMin), Number(d.sizeMax), bucket)) return false;
     }
     if (terms.length) {
       const haystack = d.search ?? '';
@@ -201,7 +201,7 @@ function initDirectory(form: HTMLFormElement, grid: HTMLElement) {
 
     const message =
       visible.length === 0
-        ? 'No listings match your filters'
+        ? 'No businesses match those filters'
         : visible.length === total
           ? `Showing all ${total} sample listings`
           : `Showing ${visible.length} of ${total} sample listings`;

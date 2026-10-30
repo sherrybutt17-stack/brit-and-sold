@@ -16,7 +16,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'eye-off',
     title: 'Discretion first',
-    text: 'Your name stays out of marketing materials, and buyers sign an NDA before they learn which business it is.',
+    text: 'Your business name stays out of marketing materials, and buyers sign an NDA before they learn which business it is.',
   },
   {
     icon: 'scale',
@@ -37,7 +37,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
 ---
 
 <BaseLayout
-  title="About Rob Dawson"
+  title="About Rob"
   description="Meet Rob Dawson, entrepreneur, CEO and business coach, and learn how Built and Sold works with business owners and buyers."
   stickyCta={CTA.sell}
 >
@@ -45,7 +45,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
     <div class="about-hero__inner">
       <div class="about-hero__copy">
         <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">About Rob</p>
-        <SplitText as="h1" mode="load" class="about-hero__title" text="Meet *Rob Dawson*" />
+        <SplitText as="h1" mode="load" class="about-hero__title" text={"Meet *Rob\u00A0Dawson*"} />
         <p class="lead load-in" style="--d: 0.4s">
           Entrepreneur, CEO and business coach, and the “with Rob Dawson” in Built and Sold. When you reach out, this is
           who you’re talking to.
@@ -63,7 +63,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
           src={robSeated}
           formats={['avif']}
           fallbackFormat="webp"
-          widths={[360, 560, 800, 1135]}
+          widths={[360, 480, 680, 860, 1040]}
           sizes="(min-width: 64rem) 520px, 90vw"
           alt="Rob Dawson in a gray blazer and white shirt, seated on a wooden bench outdoors, hands clasped."
           loading="eager"
@@ -84,9 +84,8 @@ const values: { icon: IconName; title: string; text: string }[] = [
           through night school, and built from there to become the CEO of his own company.
         </p>
         <p>
-          Along the way he has spent more than 12 years in digital-marketing consulting and works as a business coach,
-          helping owners think clearly about growth, sales and what they want their business to do for them. He also
-          hosts the <em>Faith on Fire</em> podcast.
+          Along the way he has spent more than 12 years in digital-marketing consulting, and he works as a business
+          coach focused on business growth and leadership. He also hosts the <em>Faith on Fire</em> podcast.
         </p>
         <p class="muted small">
           Biography adapted from <a href={ROB_LINKS.website} rel="noopener">robdawson.tv</a>.
@@ -114,7 +113,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
         {
           OWNER_FACTS.focus && (
             <div>
-              <dt>Industries and deal sizes</dt>
+              <dt>Who Rob works with</dt>
               <dd>
                 <Fact name="focus" />
               </dd>
@@ -153,7 +152,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
   <section class="section" aria-labelledby="values-title">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-reveal><span class="eyebrow__num">03</span>How we work</p>
+        <p class="eyebrow" data-reveal><span class="eyebrow__num">02</span>How we work</p>
         <SplitText id="values-title" text="What you can *expect*" />
       </div>
       <ul role="list" class="values">
@@ -185,8 +184,8 @@ const values: { icon: IconName; title: string; text: string }[] = [
           <ul role="list">
             <li>Clear public listings that show what each seller has approved.</li>
             <li>A short qualification step, then an NDA, before full details.</li>
-            <li>Be ready to share proof of funds and relevant experience.</li>
-            <li>Honest status updates, including when a business is under offer.</li>
+            <li>A request for proof of funds and relevant experience.</li>
+            <li>Honest status updates, including when a business is under a letter of intent or under contract.</li>
           </ul>
         </article>
       </div>
@@ -197,11 +196,11 @@ const values: { icon: IconName; title: string; text: string }[] = [
     <div class="container">
       <div class="section-head section-head--split">
         <div>
-          <p class="eyebrow" data-reveal><span class="eyebrow__num">04</span>The process</p>
+          <p class="eyebrow" data-reveal><span class="eyebrow__num">03</span>The process</p>
           <SplitText id="proof-title" text="How a sale runs, *step by step*" />
         </div>
         <p class="muted" data-reveal style="--reveal-delay: 2">
-          Every sale is different, but the shape is predictable. Here is what to expect from the first call to closing.
+          No two sales are identical, but most follow the same five stages, from the first conversation to closing.
         </p>
       </div>
       <ProcessSteps />
@@ -430,13 +429,16 @@ const values: { icon: IconName; title: string; text: string }[] = [
     background: var(--sky-50);
     border: 1px solid var(--sky-200);
   }
+  /* Top-aligned so the icon stays beside the first line when the heading wraps. */
   .relationship__col h3 {
     display: flex;
     gap: var(--space-3);
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: var(--space-4);
   }
   .relationship__col h3 .icon {
+    flex: none;
+    margin-top: 0.2em;
     color: var(--cobalt-600);
   }
   .relationship__col ul {
@@ -453,7 +455,7 @@ const values: { icon: IconName; title: string; text: string }[] = [
     top: 0.6em;
     left: 0;
     width: 0.6rem;
-    height: 1.5px;
+    height: 2px;
     background: var(--cobalt-600);
   }
 </style>

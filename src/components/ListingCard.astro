@@ -1,7 +1,7 @@
 ---
 import { url } from '../lib/url';
 import { industryIcon } from '../lib/industries';
-import { EARNINGS_LABELS, formatEmployees, formatUSD, type PublicListing } from '../lib/listings';
+import { EARNINGS_EXPANSIONS, formatEmployees, formatUSD, type PublicListing } from '../lib/listings';
 import Icon from './Icon.astro';
 import StatusBadge from './StatusBadge.astro';
 
@@ -42,7 +42,11 @@ const transitionName = `listing-${listing.id}`;
         listing.earnings && (
           <div>
             <dt>
-              <abbr title={EARNINGS_LABELS[listing.earnings.kind]}>{listing.earnings.kind}</abbr>
+              {EARNINGS_EXPANSIONS[listing.earnings.kind] ? (
+                <abbr title={EARNINGS_EXPANSIONS[listing.earnings.kind]}>{listing.earnings.kind}</abbr>
+              ) : (
+                listing.earnings.kind
+              )}
             </dt>
             <dd>{formatUSD(listing.earnings.amount)}</dd>
           </div>
@@ -58,8 +62,8 @@ const transitionName = `listing-${listing.id}`;
 
     <div class="listing-card__foot">
       <p class="listing-card__meta">
-        <span><Icon name="users" />{formatEmployees(listing.employees)} employees</span>
-        {listing.yearsOperating && <span><Icon name="calendar" />{listing.yearsOperating} yrs</span>}
+        <span><Icon name="users" />{formatEmployees(listing.employees)} {listing.employees.max === 1 ? 'employee' : 'employees'}</span>
+        {listing.yearsOperating && <span><Icon name="calendar" />{listing.yearsOperating} years</span>}
       </p>
       <span class="listing-card__more" aria-hidden="true"><Icon name="arrow-up-right" /></span>
     </div>

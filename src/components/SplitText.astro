@@ -1,6 +1,7 @@
 ---
 // A heading whose words rise into view. Wrap words in *asterisks* for the italic accent and use
-// " | " for a line break. Screen readers get the plain sentence; the animated copy is hidden from them.
+// " | " for a line break. A no-break space (U+00A0) keeps two words together on one line.
+// Screen readers get the plain sentence; the animated copy is hidden from them.
 
 interface Props {
   text: string;
@@ -18,7 +19,7 @@ const { text, as: Tag = 'h2', mode = 'view', id, class: className, delay } = Ast
 type Token = { word: string; italic: boolean } | { br: true };
 const tokens: Token[] = [];
 let italic = false;
-for (const raw of text.split(/\s+/).filter(Boolean)) {
+for (const raw of text.split(/[ \t\n\r]+/).filter(Boolean)) {
   if (raw === '|') {
     tokens.push({ br: true });
     continue;

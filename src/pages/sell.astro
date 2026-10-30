@@ -34,7 +34,7 @@ const readiness = [
   { title: 'Customer concentration', text: 'How much revenue comes from your largest customers, and how secure those relationships are.' },
   { title: 'Recurring revenue and contracts', text: 'Which income repeats, and whether key contracts can transfer to a new owner.' },
   { title: 'Key people', text: 'Who is essential, how long they have been with you, and whether they are likely to stay.' },
-  { title: 'Your lease', text: 'Remaining term, renewal options and whether the landlord will assign it to a buyer.' },
+  { title: 'Your lease', text: 'Remaining term, renewal options and whether the landlord will consent to assigning it to a buyer.' },
   { title: 'Add-backs, with evidence', text: 'Personal or one-time expenses run through the business, and records that support them.' },
   { title: 'Systems and processes', text: 'How work gets done, documented well enough that someone new could follow it.' },
   { title: 'Licenses and loose ends', text: 'Permits, registrations and any disputes or liabilities a buyer would want to understand.' },
@@ -44,7 +44,7 @@ const readiness = [
 
 <BaseLayout
   title="Sell Your Business"
-  description="Thinking about selling your business? Start a confidential inquiry with Built and Sold with Rob Dawson. Learn how the process works and what buyers will ask about."
+  description="Thinking about selling your business? Start a confidential inquiry with Built and Sold, and see how a sale works and what buyers will ask about."
   stickyCta={{ href: '#inquiry', label: 'Start your inquiry' }}
 >
   <PageHero>
@@ -128,7 +128,7 @@ const readiness = [
 
   <section class="section" id="process" aria-labelledby="sell-process-title">
     <div class="container">
-      <div class="section-head section-head--split">
+      <div class="section-head section-head--split process-head">
         <div>
           <p class="eyebrow" data-reveal><span class="eyebrow__num">01</span>The process</p>
           <SplitText id="sell-process-title" text="What selling with a broker *looks like*" />
@@ -163,7 +163,7 @@ const readiness = [
         <ul role="list" class="inquiry__points">
           <li><Icon name="check" />No documents, no commitment</li>
           <li><Icon name="check" />Not ready yet? That’s an option in the form</li>
-          <li><Icon name="check" />Your details aren’t shared with buyers</li>
+          <li><Icon name="check" />Your details aren’t shared with buyers without your permission</li>
         </ul>
         {
           (OWNER_FACTS.phone || OWNER_FACTS.bookingUrl) && (
@@ -223,7 +223,7 @@ const readiness = [
       <div class="faq-layout__head">
         <p class="eyebrow"><span class="eyebrow__num">04</span>Questions</p>
         <SplitText id="faq-title" text="Questions *owners* ask" />
-        <p class="muted">Straight answers, including where the honest answer is “it depends”.</p>
+        <p class="muted">Straight answers, including where the honest answer is “it depends.”</p>
       </div>
       <div>
         <FaqItem question="Will my employees, customers or competitors find out?">
@@ -243,7 +243,7 @@ const readiness = [
         <FaqItem question="How long does it take to sell a business?">
           <p>
             It varies with size, industry, preparation and how the buyer is financing the purchase. Rob will give you a
-            realistic view for your situation.{OWNER_FACTS.timeline && <Fragment> Typical timeline: <Fact name="timeline" /></Fragment>}
+            realistic view for your situation.{OWNER_FACTS.timeline && <Fragment> Typical timeline: <Fact name="timeline" />.</Fragment>}
           </p>
         </FaqItem>
         <FaqItem question="Do I need everything ready before I get in touch?">
@@ -256,7 +256,7 @@ const readiness = [
           OWNER_FACTS.fees && (
             <FaqItem question="What does it cost?">
               <p>
-                <Fact name="fees" />
+                <Fact name="fees" />.
               </p>
             </FaqItem>
           )
@@ -264,8 +264,8 @@ const readiness = [
         {
           (OWNER_FACTS.focus || OWNER_FACTS.serviceArea) && (
             <FaqItem question="Which businesses and areas does Rob work with?">
-              {OWNER_FACTS.focus && <p>Industries and deal sizes: <Fact name="focus" /></p>}
-              {OWNER_FACTS.serviceArea && <p>Service area: <Fact name="serviceArea" /></p>}
+              {OWNER_FACTS.focus && <p>Who Rob works with: <Fact name="focus" />.</p>}
+              {OWNER_FACTS.serviceArea && <p>Service area: <Fact name="serviceArea" />.</p>}
             </FaqItem>
           )
         }
@@ -354,7 +354,8 @@ const readiness = [
     display: grid;
     gap: var(--space-6);
   }
-  @media (min-width: 64rem) {
+  /* The intro sits beside the three cards only when there is room for comfortable line lengths. */
+  @media (min-width: 80rem) {
     .discretion {
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 2fr);
       gap: var(--space-8);
@@ -378,7 +379,7 @@ const readiness = [
     display: grid;
     gap: var(--space-5);
   }
-  @media (min-width: 40rem) {
+  @media (min-width: 48rem) {
     .discretion__list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -407,6 +408,10 @@ const readiness = [
     color: var(--cobalt-600);
   }
 
+  /* The facts panel is taller than the heading, so top-align them rather than bottom-align. */
+  .process-head {
+    align-items: start;
+  }
   .process-facts {
     display: grid;
     gap: var(--space-2);

@@ -111,8 +111,8 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     border-bottom: 1px solid var(--line);
     background: rgb(255 255 255 / 0.9);
     color: var(--navy-900);
-    backdrop-filter: saturate(1.4) blur(12px);
     -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    backdrop-filter: saturate(1.4) blur(12px);
     transition:
       background-color 0.4s ease,
       border-color 0.4s ease,
@@ -132,8 +132,8 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     border-color: transparent;
     background: transparent;
     color: var(--white);
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
   :global(.js:has(main > .page-hero:first-child)) .site-header:not(.is-scrolled) .site-nav a {
     color: rgb(255 255 255 / 0.86);
@@ -250,10 +250,10 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     }
   }
 
-  /* Mobile menu: a modal sheet from the right. */
+  /* Mobile menu: a modal sheet from the right; full width on phones so no sliver of page shows beside it. */
   .mobile-menu {
-    width: min(24rem, 100%);
-    max-width: none;
+    width: 24rem;
+    max-width: 100%;
     height: 100dvh;
     max-height: none;
     margin: 0 0 0 auto;
@@ -261,6 +261,11 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     border: 0;
     background: var(--navy-900);
     color: var(--on-dark);
+  }
+  @media (max-width: 29.99rem) {
+    .mobile-menu {
+      width: 100%;
+    }
   }
   .mobile-menu[open] {
     display: flex;

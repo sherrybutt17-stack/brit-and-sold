@@ -58,26 +58,32 @@ const total = String(PROCESS_STEPS.length).padStart(2, '0');
     position: relative;
     display: grid;
   }
-  /* Rail on the left of the list (all sizes); it fills as you scroll. */
-  .story__steps::before,
-  .story__steps::after {
+  /* Rail on the left (all sizes): one segment from each number to the next, so it stops at the last step.
+     A segment fills once its step is done. */
+  .story__step:not(:last-child)::before,
+  .story__step:not(:last-child)::after {
     content: '';
     position: absolute;
-    top: 1.5rem;
-    bottom: 1.5rem;
+    top: calc(var(--space-5) + 1.5rem);
+    bottom: calc(-1 * (var(--space-5) + 1.5rem));
     left: 1.5rem;
     width: 2px;
     margin-left: -1px;
-    border-radius: 2px;
     background: var(--sky-200);
   }
-  .story__steps::after {
-    background: linear-gradient(var(--cobalt-600), var(--cobalt-500));
+  .story__step:not(:last-child)::after {
+    background: var(--cobalt-600);
     transform-origin: top;
-    transform: scaleY(var(--p));
+    transform: scaleY(0);
   }
-  :global(html:not(.js)) .story__steps::after {
+  .story__step.is-done:not(:last-child)::after,
+  :global(html:not(.js)) .story__step:not(:last-child)::after {
     transform: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .story__step:not(:last-child)::after {
+      transition: transform 0.6s var(--ease-out);
+    }
   }
   .story__step {
     position: relative;

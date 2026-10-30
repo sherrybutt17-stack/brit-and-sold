@@ -1,4 +1,5 @@
-import { SAMPLE_LISTINGS, type EarningsKind, type Listing, type ListingStatus } from '../data/listings';
+import { SAMPLE_LISTINGS, type AddressVisibility, type EarningsKind, type Listing, type ListingStatus } from '../data/listings';
+import { US_STATES } from '../data/us';
 
 /**
  * The only listing shape pages and components may render.
@@ -12,6 +13,9 @@ export interface PublicListing {
   industry: string;
   /** Location text exactly as the public may see it. */
   locationLabel: string;
+  /** Area or city and state, never a street address. For summaries such as meta descriptions. */
+  placeLabel: string;
+  addressVisibility: AddressVisibility;
   state: string;
   revenue: number;
   earnings?: { kind: EarningsKind; amount: number };
@@ -39,6 +43,12 @@ export const EARNINGS_LABELS: Record<EarningsKind, string> = {
   'Cash flow': 'Cash flow',
 };
 
+/** Spelled-out meanings for the abbreviations on listing cards. */
+export const EARNINGS_EXPANSIONS: Partial<Record<EarningsKind, string>> = {
+  SDE: 'Seller’s discretionary earnings',
+  EBITDA: 'Earnings before interest, taxes, depreciation and amortization',
+};
+
 export function formatLocation(listing: Listing): string {
   const { location, privateAddress, addressVisibility } = listing;
   if (addressVisibility === 'exact' && privateAddress) {
@@ -48,7 +58,17 @@ export function formatLocation(listing: Listing): string {
     const zip = privateAddress?.postalCode ? ` ${privateAddress.postalCode}` : '';
     return `${location.city}, ${location.state}${zip}`;
   }
-  return `${location.area}, ${location.state}`;
+  return areaLabel(listing);
+}
+
+/** The broker-written area, plus the state unless the area already names it ("Central Texas", not "Central Texas, TX"). */
+function areaLabel({ location }: Listing): string {
+  const stateName = US_STATES.find((s) => s.code === location.state)?.name;
+  return stateName && location.area.includes(stateName) ? location.area : `${location.area}, ${location.state}`;
+}
+
+function placeLabel(listing: Listing): string {
+  return listing.addressVisibility === 'region' ? areaLabel(listing) : `${listing.location.city}, ${listing.location.state}`;
 }
 
 export function toPublicListing(listing: Listing): PublicListing {
@@ -59,6 +79,8 @@ export function toPublicListing(listing: Listing): PublicListing {
     title: listing.title,
     industry: listing.industry,
     locationLabel: formatLocation(listing),
+    placeLabel: placeLabel(listing),
+    addressVisibility: listing.addressVisibility,
     state: listing.location.state,
     revenue: listing.revenue,
     earnings: listing.earnings,
@@ -94,9 +116,6 @@ export function formatEmployees({ min, max }: { min: number; max: number }): str
   return min === max ? `${min}` : `${min}–${max}`;
 }
 
-export function employeesMidpoint({ min, max }: { min: number; max: number }): number {
-  return Math.round((min + max) / 2);
-}
 
 export function formatListedDate(iso: string): string {
   return new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', {

@@ -44,11 +44,11 @@ export const OWNER_FACTS: Record<
   email: 'hello@builtandsold.example', // .example is a reserved, non-routable domain
   phone: '(555) 010-0142', // 555-01xx numbers are reserved for fictional use
   bookingUrl: null,
-  serviceArea: 'Business owners across the United States',
+  serviceArea: 'Anywhere in the United States',
   focus: 'Owner-operated businesses with roughly $500K to $10M in annual revenue',
   responseTime: 'within one business day',
   licensing: null,
-  fees: 'Typically a success fee paid at closing, agreed in writing before your business is marketed.',
+  fees: 'Typically a success fee paid at closing, agreed in writing before your business is marketed',
   timeline: 'Usually six to twelve months from first conversation to closing',
   origin:
     'Built and Sold exists for owners who want an honest read on their options and a discreet, well-run process, whether they sell next quarter or in five years.',
@@ -70,7 +70,7 @@ export const PROCESS_STEPS = [
     title: 'A private first conversation',
     summary: 'Your goals, your timing and the business at a high level. No documents and no commitment.',
     detail:
-      'We talk about why you are thinking about selling, what you want life to look like afterwards, and whether a sale is the right move now, later or not at all.',
+      'We talk about why you are thinking about selling, what you want life to look like afterward, and whether a sale is the right move now, later or not at all.',
   },
   {
     title: 'Review and value discussion',

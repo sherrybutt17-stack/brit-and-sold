@@ -15,7 +15,7 @@ import {
 } from '../../data/filters';
 import { stateName } from '../../data/us';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { employeesMidpoint, getPublicListings, type PublicListing } from '../../lib/listings';
+import { getPublicListings, type PublicListing } from '../../lib/listings';
 
 const listings = getPublicListings();
 const industries = [...new Set(listings.map((l) => l.industry))].sort();
@@ -46,7 +46,7 @@ const buyerSteps = [
         <SplitText as="h1" mode="load" class="dir-intro__title" text="Businesses *for sale*" />
         <p class="lead load-in" style="--d: 0.35s">
           Each listing shows what the seller has approved for public view. Full details, including the business name,
-          are shared with qualified buyers after a confidentiality agreement.
+          are shared with qualified buyers after they sign a confidentiality agreement.
         </p>
       </div>
       <div class="load-in" style="--d: 0.5s">
@@ -174,7 +174,8 @@ const buyerSteps = [
                 data-state={listing.state}
                 data-revenue={listing.revenue}
                 data-price={listing.askingPrice ?? ''}
-                data-size={employeesMidpoint(listing.employees)}
+                data-size-min={listing.employees.min}
+                data-size-max={listing.employees.max}
                 data-status={listing.status}
                 data-listed={listing.listedAt}
                 data-search={searchText(listing)}

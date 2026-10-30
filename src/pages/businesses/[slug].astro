@@ -1,5 +1,6 @@
 ---
 import { url } from '../../lib/url';
+import { BRAND } from '../../config/site';
 import type { GetStaticPaths } from 'astro';
 import Icon from '../../components/Icon.astro';
 import ListingCard from '../../components/ListingCard.astro';
@@ -47,7 +48,12 @@ const metrics = [
   },
   listing.askingPrice === null
     ? { label: 'Asking price', value: 'On request' }
-    : { label: 'Asking price', value: formatUSD(listing.askingPrice), count: listing.askingPrice, format: 'usd' },
+    : {
+        label: isSold ? 'Last asking price' : 'Asking price',
+        value: formatUSD(listing.askingPrice),
+        count: listing.askingPrice,
+        format: 'usd',
+      },
   { label: 'Employees', value: formatEmployees(listing.employees) },
   listing.yearsOperating && {
     label: 'Years operating',
@@ -58,7 +64,7 @@ const metrics = [
 ].filter(Boolean) as Metric[];
 
 const gated = [
-  'Business name and exact location',
+  listing.addressVisibility === 'exact' ? 'Business name' : 'Business name and exact location',
   'Three years of financial statements',
   'Customer, staff and supplier overview',
   'Lease, equipment and asset details',
@@ -68,7 +74,8 @@ const gated = [
 
 <BaseLayout
   title={`${listing.isSample ? 'Sample: ' : ''}${listing.title}`}
-  description={`${listing.industry} business for sale in ${listing.locationLabel}. ${listing.overview}`}
+  shortBrand
+  description={`${listing.isSample ? 'Fictional sample: ' : ''}${listing.title}. ${listing.placeLabel}; ${formatUSD(listing.revenue)} annual revenue. ${isSold ? 'This business has been sold.' : `Request details confidentially through ${BRAND.short}.`}`}
 >
   <PageHero class="listing-hero">
     <nav aria-label="Breadcrumb" class="breadcrumb load-in" style="--d: 0s">
@@ -96,12 +103,12 @@ const gated = [
       </span>
     </div>
 
-    <dl class="metrics load-in" style="--d: 0.4s">
+    <dl class="metrics load-in" style={`--d: 0.4s; --metric-count: ${metrics.length}`}>
       {
         metrics.map((m) => (
           <div class="metric glass" data-spotlight>
             <dt>{m.label}</dt>
-            <dd data-count={m.count} data-count-format={m.format}>
+            <dd class:list={{ 'metric__text': m.count === undefined && !/\d/.test(m.value) }} data-count={m.count} data-count-format={m.format}>
               {m.value}
             </dd>
           </div>
@@ -160,7 +167,7 @@ const gated = [
           <p>
             <strong>Confidentiality notice.</strong> Information in this listing comes from the seller and has not been
             independently verified. Please don’t contact the business, its owner, staff, customers or suppliers directly.
-            All inquiries go through the broker.
+            All inquiries go through {BRAND.short}.
           </p>
         </aside>
       </div>
@@ -183,8 +190,9 @@ const gated = [
           }
           {
             isSold ? (
-              <a class="btn btn--block" href={url('/businesses')}>
+              <a class="btn btn--block btn--lg" href={url('/businesses')}>
                 Browse current businesses
+                <Icon name="arrow-right" class="icon--nudge" />
               </a>
             ) : (
               <button type="button" class="btn btn--block btn--lg" data-open-request data-magnetic>
@@ -194,12 +202,16 @@ const gated = [
             )
           }
 
-          <div class="locked">
-            <p class="locked__title"><Icon name="lock" /> Shared after an NDA</p>
-            <ul role="list">
-              {gated.map((item) => <li>{item}</li>)}
-            </ul>
-          </div>
+          {
+            !isSold && (
+              <div class="locked">
+                <p class="locked__title"><Icon name="lock" /> Shared after signing an NDA</p>
+                <ul role="list">
+                  {gated.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            )
+          }
         </div>
       </aside>
     </div>
@@ -227,13 +239,13 @@ const gated = [
     )
   }
 
-  {!isSold && <RequestDetailsDialog listingTitle={listing.title} />}
+  {!isSold && <RequestDetailsDialog listingTitle={listing.title} heading={hasAcceptedOffer ? 'Register interest' : 'Request details'} />}
 </BaseLayout>
 
 <style>
+  /* One line: the current page name truncates only when it runs out of room. */
   .breadcrumb ol {
     display: flex;
-    flex-wrap: wrap;
     gap: var(--space-2);
     margin-bottom: var(--space-6);
     font-size: var(--fs-small);
@@ -244,8 +256,12 @@ const gated = [
     margin-right: var(--space-2);
     color: rgb(156 195 255 / 0.4);
   }
+  .breadcrumb li {
+    flex: none;
+  }
   .breadcrumb [aria-current] {
-    max-width: 32ch;
+    flex: 0 1 auto;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -308,25 +324,54 @@ const gated = [
   }
   .metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-3);
     margin-top: var(--space-7);
   }
+  /* An odd tile out on mobile spans the row instead of sitting alone in a half-width slot. */
+  .metric:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 48rem) {
+    .metrics {
+      grid-template-columns: repeat(var(--metric-count, 5), minmax(0, 1fr));
+    }
+    .metric:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+  }
   .metric {
     --spot-color: rgb(140 190 255 / 0.14);
-    padding: var(--space-4) var(--space-5);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4) clamp(1rem, 0.5rem + 1vw, 1.5rem);
     border-radius: var(--radius);
   }
   .metric dt {
     font-size: var(--fs-xs);
     color: var(--on-dark-muted);
   }
+  /* Values sit on a shared baseline even when a label wraps to more lines than its neighbours. */
   .metric dd {
-    margin-top: var(--space-1);
+    margin-top: auto;
+    padding-top: var(--space-1);
     font-family: var(--font-display-stack);
     font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
     font-weight: 500;
+    white-space: nowrap;
     color: var(--white);
+  }
+  .metric dd.metric__text {
+    font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.6rem);
+  }
+  /* Five narrow tiles on tablets: a smaller figure keeps values like "$2.85M" on one line. */
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .metric dd {
+      font-size: 1.45rem;
+    }
+    .metric dd.metric__text {
+      font-size: 1.15rem;
+    }
   }
   .listing-hero__sample {
     margin-top: var(--space-4);
@@ -433,9 +478,25 @@ const gated = [
     justify-content: space-between;
     margin-bottom: var(--space-6);
   }
+  /* One column on phones, two cards on tablets, three on desktop: never a lone card on its own row. */
   .related-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
     gap: var(--space-5);
+  }
+  @media (min-width: 48rem) {
+    .related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .related-grid > li:nth-child(n + 3) {
+      display: none;
+    }
+  }
+  @media (min-width: 64rem) {
+    .related-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .related-grid > li:nth-child(n + 3) {
+      display: block;
+    }
   }
 </style>

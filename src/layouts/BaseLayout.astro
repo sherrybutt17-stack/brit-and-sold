@@ -11,18 +11,22 @@ import { BRAND, IS_DEMO } from '../config/site';
 interface Props {
   /** Page-specific title; the brand name is appended. */
   title?: string;
+  /** Append the short brand name instead of the full one (keeps long page titles readable). */
+  shortBrand?: boolean;
+  /** Set false on pages that should not declare a canonical URL, such as the 404 page. */
+  canonical?: boolean;
   description: string;
   /** Mobile-only call to action pinned to the bottom of the screen after the hero. */
   stickyCta?: { href: string; label: string };
 }
 
-const { title, description, stickyCta } = Astro.props;
-const fullTitle = title ? `${title} | ${BRAND.name}` : BRAND.name;
+const { title, description, stickyCta, shortBrand = false, canonical: hasCanonical = true } = Astro.props;
+const fullTitle = title ? `${title} | ${shortBrand ? BRAND.short : BRAND.name}` : BRAND.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 // Prefetch same-site pages when a link is hovered or pressed (Chromium; ignored elsewhere).
 const speculationRules = JSON.stringify({
-  prefetch: [{ where: { href_matches: '/*' }, eagerness: 'moderate' }],
+  prefetch: [{ where: { href_matches: url('/*') }, eagerness: 'moderate' }],
 });
 ---
 
@@ -34,14 +38,14 @@ const speculationRules = JSON.stringify({
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {IS_DEMO && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="canonical" href={canonical} />
+    {hasCanonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <meta name="theme-color" content="#0a1a33" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={BRAND.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {hasCanonical && <meta property="og:url" content={canonical} />}
     <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-body" preload />
     <script is:inline>

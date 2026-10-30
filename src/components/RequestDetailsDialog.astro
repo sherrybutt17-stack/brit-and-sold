@@ -6,9 +6,11 @@ import Icon from './Icon.astro';
 interface Props {
   /** The listing the buyer is asking about; omit for a general buyer inquiry. */
   listingTitle?: string;
+  /** Dialog heading for a specific listing, matching the button that opens it. */
+  heading?: string;
 }
 
-const { listingTitle } = Astro.props;
+const { listingTitle, heading = 'Request details' } = Astro.props;
 const buyerTypes = [
   'Individual / first-time buyer',
   'Experienced owner-operator',
@@ -24,7 +26,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
     <div>
       <p class="modal__step" data-step-label>Step 1 of 3</p>
       <h2 id="request-title" class="modal__title">
-        {listingTitle ? 'Request details' : 'Tell us what you’re looking for'}
+        {listingTitle ? heading : 'Tell us what you’re looking for'}
       </h2>
       {listingTitle && <p class="small muted">For: {listingTitle}</p>}
     </div>
@@ -45,7 +47,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
       <p class="modal__demo">
         <Icon name="info" />
         <span>
-          <strong>Demo:</strong> nothing you enter here is sent or stored.
+          <strong>Demo form.</strong> Nothing you type here is sent or stored.
         </span>
       </p>
     )
@@ -59,7 +61,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
     </div>
 
     <p class="small muted">
-      A few questions help the seller understand who is asking. Qualified buyers are then asked to agree to
+      A few questions help {listingTitle ? 'the seller' : 'Rob'} understand who is asking. Qualified buyers are then asked to agree to
       confidentiality before identifying details are shared.
     </p>
 
@@ -76,7 +78,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
       </div>
       <div class="field">
         <label class="label" for="req-phone">Phone <span class="optional">(optional)</span></label>
-        <input class="input" id="req-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9()+.\- ]{7,}" aria-describedby="req-phone-error" data-error-format="Enter a phone number using digits, spaces, dashes or brackets." />
+        <input class="input" id="req-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9()+.\- ]{7,}" aria-describedby="req-phone-error" data-error-format="Enter a phone number using digits, spaces, dashes or parentheses." />
         <p class="field-error" id="req-phone-error"></p>
       </div>
       <div class="field">
@@ -106,7 +108,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
 
     <div class="field">
       <label class="label" for="req-funds">Funds available for a down payment or equity</label>
-      <select class="select" id="req-funds" name="funds" required aria-describedby="req-funds-hint req-funds-error" data-error-required="Choose a range, or “I’d rather discuss this”.">
+      <select class="select" id="req-funds" name="funds" required aria-describedby="req-funds-hint req-funds-error" data-error-required="Choose a range, or “I’d rather discuss this.”">
         <option value="">Choose a range</option>
         {funds.map((f) => <option>{f}</option>)}
       </select>
@@ -144,7 +146,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
       </p>
       <p class="small">By continuing, you would agree to:</p>
       <ul class="small">
-        <li>use any information shared only to evaluate this acquisition;</li>
+        <li>use any information shared only to evaluate a potential acquisition;</li>
         <li>keep the business’s identity and information confidential, sharing it only with your advisors;</li>
         <li>not contact the business, its owner, employees, customers, suppliers or landlord directly;</li>
         <li>return or destroy the information if asked.</li>
@@ -160,8 +162,8 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
     </div>
 
     <div class="field">
-      <label class="label" for="req-signature">Type your full name to sign</label>
-      <input class="input" id="req-signature" name="signature" autocomplete="name" required aria-describedby="req-signature-error" data-error-required="Type your full name to sign." />
+      <label class="label" for="req-signature">Type your full name to confirm</label>
+      <input class="input" id="req-signature" name="signature" autocomplete="name" required aria-describedby="req-signature-error" data-error-required="Type your full name to confirm." />
       <p class="field-error" id="req-signature-error"></p>
     </div>
 
@@ -230,6 +232,7 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
   @media (max-width: 39.99rem) {
     .modal {
       width: 100%;
+      max-width: 100%;
       max-height: 100dvh;
       height: 100dvh;
       border-radius: 0;
@@ -361,5 +364,11 @@ const timeframes = ['Within 3 months', '3 – 6 months', '6 – 12 months', 'Jus
   }
   .modal__done .modal__actions {
     justify-self: stretch;
+  }
+  /* On phones the two closing buttons stack full width instead of leaving "Close" stranded. */
+  @media (max-width: 39.99rem) {
+    .modal__done .modal__actions .btn {
+      flex: 1 1 100%;
+    }
   }
 </style>

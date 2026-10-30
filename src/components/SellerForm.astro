@@ -1,17 +1,16 @@
 ---
-import { url } from '../lib/url';
-import { IS_DEMO, OWNER_FACTS } from '../config/site';
+import { CTA, IS_DEMO, OWNER_FACTS } from '../config/site';
 import { INDUSTRIES, US_STATES } from '../data/us';
 import Fact from './Fact.astro';
 import Icon from './Icon.astro';
 
 const revenueRanges = ['Under $500K', '$500K – $1M', '$1M – $3M', '$3M – $10M', '$10M+', 'I’d rather not say yet'];
-const employeeRanges = ['Just me', '2 – 10', '11 – 25', '26 – 50', '51 – 100', '100+'];
+const employeeRanges = ['Just me', '2 – 10', '11 – 25', '26 – 50', '51 – 100', '101+'];
 const steps = ['About you', 'The business', 'Timing'];
 const stages = [
   { value: 'within-12-months', label: 'I’d like to sell in the next 12 months' },
   { value: 'one-to-three-years', label: 'I’m planning ahead: one to three years out' },
-  { value: 'not-ready', label: 'I’m not ready to sell, I want to understand my options' },
+  { value: 'not-ready', label: 'I’m not ready yet, but I want to understand my options' },
   { value: 'circumstances-changed', label: 'Something has changed and I need to move sooner' },
 ];
 ---
@@ -115,7 +114,7 @@ const stages = [
             pattern="[0-9()+.\- ]{7,}"
             aria-describedby="seller-phone-hint seller-phone-error"
             data-error-required="Enter a phone number, or choose email as your preferred contact method."
-            data-error-format="Enter a phone number using digits, spaces, dashes or brackets."
+            data-error-format="Enter a phone number using digits, spaces, dashes or parentheses."
           />
           <p class="hint" id="seller-phone-hint">Only used to arrange a call if you prefer one.</p>
           <p class="field-error" id="seller-phone-error"></p>
@@ -196,7 +195,7 @@ const stages = [
             name="revenue"
             required
             aria-describedby="seller-revenue-error"
-            data-error-required="Choose a revenue range, or “I’d rather not say yet”."
+            data-error-required="Choose a revenue range, or “I’d rather not say yet.”"
           >
             <option value="">Choose a range</option>
             {revenueRanges.map((range) => <option>{range}</option>)}
@@ -299,7 +298,7 @@ const stages = [
 
   <div class="seller-form__success" data-success tabindex="-1" aria-labelledby="seller-success-title" hidden>
     <span class="seller-form__success-icon"><Icon name="check" /></span>
-    <h2 id="seller-success-title">Thanks<span data-success-name></span>. Your inquiry is ready.</h2>
+    <h2 id="seller-success-title">Thanks<span data-success-name></span>. {IS_DEMO ? 'Your inquiry is complete.' : 'We’ve received your inquiry.'}</h2>
     {
       IS_DEMO && (
         <p class="notice">
@@ -318,7 +317,7 @@ const stages = [
       <li>That first conversation is private and carries no obligation to list or sell.</li>
     </ol>
     <div class="btn-row">
-      <a class="btn btn--secondary" href={url('/businesses')}>Browse businesses</a>
+      <a class="btn btn--secondary" href={CTA.browse.href}>{CTA.browse.label}</a>
       <button class="btn btn--secondary" type="button" data-reset-form>Start a new inquiry</button>
     </div>
   </div>

@@ -55,7 +55,7 @@ const promises = [
   'A *quiet* first conversation',
   'No documents to start',
   'Company name *optional*',
-  'Screened, serious buyers',
+  'Buyers screened *first*',
   'An NDA *before* any details',
   'No obligation to list',
 ];
@@ -68,7 +68,9 @@ const promises = [
   <PageHero variant="home">
     <div class="hero">
       <div class="hero__copy">
-        <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">Business brokerage · with Rob Dawson</p>
+        <p class="eyebrow eyebrow--pill load-in" style="--d: 0s">
+          Business brokerage<span class="hero__pill-extra">&nbsp;· with Rob Dawson</span>
+        </p>
         <SplitText
           as="h1"
           mode="load"
@@ -76,8 +78,8 @@ const promises = [
           text="Thinking about selling your business? | Start with a *quiet conversation.*"
         />
         <p class="lead load-in" style="--d: 0.45s">
-          Built and Sold helps owners explore a sale discreetly: understanding what buyers will look for, preparing
-          properly, and meeting qualified buyers only when you’re ready.
+          Built and Sold helps you explore a sale discreetly: understanding what buyers look for, preparing properly,
+          and meeting qualified buyers only when you’re ready.
         </p>
         <div class="btn-row load-in" style="--d: 0.6s">
           <a class="btn btn--on-dark btn--lg" href={CTA.sell.href} data-magnetic>
@@ -110,7 +112,7 @@ const promises = [
     </a>
   </PageHero>
 
-  <section class="lift promise-band" aria-label="What to expect">
+  <section class="lift promise-band">
     <Marquee label="What to expect" items={promises} />
   </section>
 
@@ -155,7 +157,7 @@ const promises = [
           <SplitText id="concerns-title" text="The questions owners ask *before* they say “sell” out loud." />
         </div>
         <p class="lead" data-reveal style="--reveal-delay: 2">
-          Most owners only sell once. It’s normal to have doubts. Here is how a careful process handles the common ones.
+          Most owners sell only once. It’s normal to have doubts. Here is how a careful process handles the common ones.
         </p>
       </div>
       <ul class="concerns" role="list">
@@ -183,7 +185,7 @@ const promises = [
           <SplitText id="process-title" text="A clear process, from *first call* to closing." />
         </div>
         <p class="lead" data-reveal style="--reveal-delay: 2">
-          Every sale is different, but the shape is predictable. You’ll always know what happens next.
+          Every sale is different, but the shape is predictable. At each stage, you’ll know what comes next.
         </p>
       </div>
       <ProcessStory />
@@ -243,8 +245,8 @@ const promises = [
         <p class="eyebrow" data-reveal><span class="eyebrow__num">04</span>Who you’ll talk to</p>
         <SplitText id="meet-title" text="Meet *Rob Dawson*" />
         <p class="lead" data-reveal style="--reveal-delay: 1">
-          Rob is an entrepreneur, CEO and business coach with more than 12 years in digital-marketing consulting. He
-          knows what it takes to build a business, and how much of an owner’s life goes into one.
+          Rob is an entrepreneur and business coach with more than 12 years in digital-marketing consulting. He left
+          high school without graduating, went back through night school, and became the CEO of his own company.
         </p>
         <a class="text-link" href={url('/about')} data-reveal style="--reveal-delay: 3">More about Rob <Icon name="arrow-right" /></a>
       </div>
@@ -252,15 +254,15 @@ const promises = [
   </section>
 
   <CtaBand
-    eyebrow="Before you need to sell"
+    eyebrow="Plan ahead"
     title="The best time to prepare for a sale is *before you need one.*"
     primary={CTA.sell}
     secondary={{ href: url('/sell#readiness'), label: 'What buyers will ask about' }}
   >
     <p>
-      Buyers and lenders usually ask for the last few years of financial statements and tax returns. Improvements you
-      make now, such as cleaner books, less reliance on you and documented systems, take time to show up in those
-      numbers.
+      Buyers and lenders usually ask for the last few years of financial statements and tax returns. Cleaner books
+      take time to show up in those numbers, and changes like documented systems or less reliance on you take time to
+      prove.
     </p>
     <p>Starting the conversation early gives you more options, not fewer.</p>
   </CtaBand>
@@ -271,6 +273,12 @@ const promises = [
   .hero {
     display: grid;
     gap: var(--space-7);
+  }
+  /* The wordmark above already says "with Rob Dawson"; dropping it here keeps the pill on one line on phones. */
+  @media (max-width: 29.99rem) {
+    .hero__pill-extra {
+      display: none;
+    }
   }
   @media (min-width: 64rem) {
     .hero {
@@ -376,10 +384,10 @@ const promises = [
     }
   }
   .path {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-4);
-    align-content: start;
-    justify-items: start;
+    align-items: flex-start;
     min-height: 22rem;
     padding: clamp(1.75rem, 1rem + 3vw, 3.25rem);
     overflow: hidden;
@@ -443,6 +451,13 @@ const promises = [
     font-size: clamp(2rem, 1.5rem + 1.8vw, 3rem);
     font-weight: 400;
     letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  /* Two narrow columns on tablets: keep each title to two lines. */
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .path__title {
+      font-size: 1.85rem;
+    }
   }
   .path--buyer .path__title em {
     color: var(--cobalt-600);
@@ -514,11 +529,19 @@ const promises = [
     margin-top: var(--space-6);
   }
 
-  /* Featured listings: a swipeable row on phones, a grid above that. */
+  /* Featured listings: a swipeable row on phones, two cards on tablets, three on desktop. */
   .featured {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-5);
+  }
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .featured {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .featured > li:nth-child(n + 3) {
+      display: none;
+    }
   }
   @media (max-width: 47.99rem) {
     .featured {

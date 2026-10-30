@@ -25,12 +25,19 @@ const { href, label } = Astro.props;
     left: 0;
     z-index: 40;
     padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.92) 35%);
+    /* No backdrop: a light fade would wash out dark sections. The button's shadow separates it instead. */
+    pointer-events: none;
     transform: translateY(110%);
     visibility: hidden;
     transition:
       transform 0.45s var(--ease-out-expo),
       visibility 0s linear 0.45s;
+  }
+  .sticky-cta .btn {
+    pointer-events: auto;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.22),
+      0 12px 30px -6px rgb(10 26 51 / 0.45);
   }
   .sticky-cta[data-visible] {
     transform: none;

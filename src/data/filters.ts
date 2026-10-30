@@ -29,13 +29,13 @@ export const PRICE_BUCKETS: RangeBucket[] = [
 /** Extra asking-price option for listings whose price is not shown publicly. */
 export const PRICE_UNDISCLOSED = { id: 'on-request', label: 'Price on request' } as const;
 
-/** Employee-count buckets; a listing's range is classified by its midpoint. */
+/** Employee-count buckets; a listing matches every bucket its employee range overlaps. */
 export const SIZE_BUCKETS: RangeBucket[] = [
   { id: '1-10', label: '1 – 10 employees', min: 1, max: 11 },
   { id: '11-25', label: '11 – 25 employees', min: 11, max: 26 },
   { id: '26-50', label: '26 – 50 employees', min: 26, max: 51 },
   { id: '51-100', label: '51 – 100 employees', min: 51, max: 101 },
-  { id: '100-plus', label: '100+ employees', min: 101 },
+  { id: '100-plus', label: '101+ employees', min: 101 },
 ];
 
 export const STATUS_OPTIONS = [
@@ -57,4 +57,9 @@ export type SortId = (typeof SORT_OPTIONS)[number]['id'];
 
 export function inBucket(value: number, bucket: RangeBucket): boolean {
   return value >= bucket.min && (bucket.max === undefined || value < bucket.max);
+}
+
+/** True when the inclusive range [min, max] shares at least one value with the bucket. */
+export function rangeInBucket(min: number, max: number, bucket: RangeBucket): boolean {
+  return max >= bucket.min && (bucket.max === undefined || min < bucket.max);
 }

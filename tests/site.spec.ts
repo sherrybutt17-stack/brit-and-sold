@@ -193,9 +193,9 @@ test.describe('buyer request dialog', () => {
 
     await expect(dialog.getByText('Step 2 of 3')).toBeVisible();
     await dialog.getByRole('button', { name: 'Submit request' }).click();
-    await expect(dialog.getByLabel('Type your full name to sign', { exact: true })).toHaveAttribute('aria-invalid', 'true');
+    await expect(dialog.getByLabel('Type your full name to confirm', { exact: true })).toHaveAttribute('aria-invalid', 'true');
     await dialog.getByLabel('I agree to keep any information I receive confidential.', { exact: true }).check();
-    await dialog.getByLabel('Type your full name to sign', { exact: true }).fill('Jordan Buyer');
+    await dialog.getByLabel('Type your full name to confirm', { exact: true }).fill('Jordan Buyer');
     await dialog.getByRole('button', { name: 'Submit request' }).click();
 
     await expect(dialog.getByRole('heading', { name: /Request received/ })).toBeVisible();
@@ -228,7 +228,7 @@ test.describe('seller inquiry form', () => {
     await form(page).getByLabel('Number of employees', { exact: true }).selectOption('11 – 25');
   }
   async function fillStep3(page: Page) {
-    await form(page).getByLabel('I’m not ready to sell, I want to understand my options').check();
+    await form(page).getByLabel('I’m not ready yet, but I want to understand my options').check();
     await form(page).getByLabel(/I’m happy to be contacted/).check();
   }
   async function completeForm(page: Page) {
@@ -292,6 +292,18 @@ test.describe('seller inquiry form', () => {
     await form(page).getByLabel('I’d rather share my company name after our first conversation.').check();
     await expect(company).toBeDisabled();
     await expect(company).toHaveValue('');
+  });
+
+  test('ticking an unlabelled checkbox after a failed step throws no error', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto('/sell');
+    await fillStep1(page);
+    await next(page).click();
+    await next(page).click(); // fail step 2 so live re-validation is switched on
+    await form(page).getByLabel('I’d rather share my company name after our first conversation.').check();
+    await expect(form(page).getByRole('textbox', { name: /Company name/ })).toBeDisabled();
+    expect(errors).toEqual([]);
   });
 
   test('submission failure keeps answers and shows an error', async ({ page }) => {

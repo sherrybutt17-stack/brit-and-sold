@@ -383,7 +383,6 @@ a:hover {
 :focus-visible {
   outline: 2px solid var(--cobalt-600);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 .btn:focus-visible {
   outline: none;

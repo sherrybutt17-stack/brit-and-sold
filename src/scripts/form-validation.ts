@@ -113,6 +113,7 @@ export function enableLiveValidation(form: HTMLFormElement): void {
     const el = event.target as Element;
     if (!isControl(el)) return;
     const key = keyFor(el);
+    if (!key) return;
     const wasInvalid = controlsFor(form, key).some((c) => c.getAttribute('aria-invalid') === 'true');
     if (wasInvalid) setFieldError(form, key, messageFor(el));
   };
