@@ -1,4 +1,4 @@
-# Build and Sold with Rob Dawson: website mockup
+# Built and Sold with Rob Dawson: website mockup
 
 A four-page business brokerage website for business owners exploring a sale and for buyers browsing businesses for sale. It is built with [Astro](https://astro.build) as a static site, using plain CSS and a small amount of vanilla TypeScript, with [Lenis](https://github.com/darkroomengineering/lenis) for smooth scrolling.
 
@@ -34,7 +34,7 @@ Every push to `main` builds the site and publishes it to **https://sherrybutt17-
 | `/businesses` | Directory with keyword search; filters for industry, state, revenue, asking price, company size and status; five sort orders; removable filter chips; reset; URL-synced state; and empty, no-listings and loading states. |
 | `/businesses/[slug]` | Listing detail page, generated statically and not shown in the main nav. Shows key metrics, overview, strengths, growth opportunities and a confidentiality notice, plus a **Request details** dialog with a three-step mock: qualification → NDA → confirmation. |
 | `/sell` | Seller page. Covers what happens after you submit, discretion, the step-by-step process, a three-step inquiry form with a progress bar, a "what buyers will ask about" readiness checklist and an FAQ. |
-| `/about` | Rob's biography (verified facts only), the Why Build and Sold placeholder, how we work, seller and buyer working relationships, and the process in place of social proof. |
+| `/about` | Rob's biography (verified facts only), the Why Built and Sold placeholder, how we work, seller and buyer working relationships, and the process in place of social proof. |
 
 To preview states that are otherwise hard to reach:
 - `/businesses?preview=loading`
@@ -82,7 +82,7 @@ These are currently either **sample values** in `src/config/site.ts` or left off
 - [ ] Brokerage licensing, registrations or memberships (if any)
 - [ ] Fee structure and typical timeline
 - [ ] Response-time commitment for new inquiries
-- [ ] Rob's brokerage experience and track record, and why he started Build and Sold
+- [ ] Rob's brokerage experience and track record, and why he started Built and Sold
 - [ ] Privacy policy and final NDA terms
 - [ ] Real listings, with per-field approval for price and address visibility
 - [ ] Approved transaction case studies (none are shown; Rob's coaching and marketing testimonials are deliberately **not** used as brokerage proof)
