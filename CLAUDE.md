@@ -39,6 +39,8 @@ Four-page business brokerage website mockup. Public brand name is exactly **Buil
 - Don't dim text with opacity (it fails contrast checks); de-emphasise with AA-passing colours instead.
 - Directory filter animations use same-document View Transitions, but search typing does not — a transition would freeze the input's snapshot.
 - `astro preview stop` stops *any* background preview, including the one the owner is viewing on port 4321 — restart it afterwards.
+- The CSS minifier (Lightning CSS) keeps only the *last* of a prefixed/unprefixed pair. Write `-webkit-backdrop-filter` first and `backdrop-filter` last, or Chrome/Firefox get no blur.
+- `SplitText` splits headings on ordinary spaces only; pass a `\u00A0` (as a JS string, e.g. `text={"Meet *Rob\u00A0Dawson*"}`) to keep two words on one line.
 
 ## Approved build plan (2026-10-28)
 
