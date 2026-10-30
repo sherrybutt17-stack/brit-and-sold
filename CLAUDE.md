@@ -27,8 +27,8 @@ Four-page business brokerage website mockup. Public brand name is exactly **Buil
 - Astro 7's `astro preview` holds a lock file; Playwright starts it with `--ignore-lock`. Stop a detached server with `npx astro preview stop`.
 
 ## Deploy
-- GitHub repo: https://github.com/sherrybutt17-stack/brit-and-sold (private). Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml` → https://sherrybutt17-stack.github.io/brit-and-sold/
-- Pages serves from `/brit-and-sold/`: always build internal links with `url()` from `src/lib/url.ts` (never hard-code `href="/..."`). The workflow sets `BASE_PATH`/`SITE_URL`; local builds leave them unset.
+- GitHub repo: https://github.com/sherrybutt17-stack/built-and-sold (public). Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml` → https://sherrybutt17-stack.github.io/built-and-sold/
+- Pages serves from `/built-and-sold/`: always build internal links with `url()` from `src/lib/url.ts` (never hard-code `href="/..."`). The workflow sets `BASE_PATH`/`SITE_URL`; local builds leave them unset.
 - `git push` works from this machine (credentials cached after the owner's first VS Code sign-in). Pages source is set to GitHub Actions; the repo is public.
 
 ## Gotchas

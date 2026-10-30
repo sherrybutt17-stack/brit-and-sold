@@ -20,11 +20,11 @@ To install the Playwright browser on first use, run `npx playwright install chro
 
 ## Live preview (GitHub Pages)
 
-Every push to `main` builds the site and publishes it to **https://sherrybutt17-stack.github.io/brit-and-sold/** using `.github/workflows/deploy.yml`.
+Every push to `main` builds the site and publishes it to **https://sherrybutt17-stack.github.io/built-and-sold/** using `.github/workflows/deploy.yml`.
 
 - **One-time setup:** in the repository, go to Settings → Pages → Build and deployment → Source, and choose **GitHub Actions**. GitHub Pages only works from a private repository on a paid plan; on a free plan, the repository must be public.
 - **The live site is public** to anyone with the link, although the pages are marked `noindex`.
-- **Links:** because Pages serves the site from `/brit-and-sold/`, internal links must go through `url()` from `src/lib/url.ts`. The workflow sets `BASE_PATH` and `SITE_URL`; locally the site runs at the root.
+- **Links:** because Pages serves the site from `/built-and-sold/`, internal links must go through `url()` from `src/lib/url.ts`. The workflow sets `BASE_PATH` and `SITE_URL`; locally the site runs at the root.
 
 ## Pages
 

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sherrybutt17-stack.github.io/brit-and-sold/",
+  "homepage": "https://sherrybutt17-stack.github.io/built-and-sold/",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
